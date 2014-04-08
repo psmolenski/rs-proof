@@ -3,9 +3,9 @@ describe('Parser', function () {
   var parser,
     Parser = require('../src/parser').Parser,
     Node = require('../src/tree').Node,
-    AtomNode = require('../src/tree').AtomNode,
-    ConjunctionNode = require('../src/tree').ConjunctionNode,
-    AlternativeNode = require('../src/tree').AlternativeNode;
+    AtomNode = require('../src/parsingTree').AtomNode,
+    ConjunctionNode = require('../src/parsingTree').ConjunctionNode,
+    AlternativeNode = require('../src/parsingTree').AlternativeNode;
 
   beforeEach(function () {
     parser = new Parser();
@@ -41,7 +41,6 @@ describe('Parser', function () {
     expect(root.getValue()).toEqual('abcd');
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
-
 
   });
 

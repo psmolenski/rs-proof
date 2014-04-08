@@ -16,6 +16,8 @@
   ],
   "author": "Paweł Smoleński",
   "license": "MIT",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "lodash": "~2.4.1"
   }
 }

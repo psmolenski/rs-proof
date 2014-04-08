@@ -1,10 +1,10 @@
-var tree = require('./tree.js');
-var Node = tree.Node;
+var tree = require('./tree');
 var Tree = tree.Tree;
-var AtomNode = tree.AtomNode;
-var ConjunctionNode = tree.ConjunctionNode;
-var AlternativeNode = tree.AlternativeNode;
-var ImplicationNode = tree.ImplicationNode;
+var parsingTree = require('./parsingTree');
+var AtomNode = parsingTree.AtomNode;
+var ConjunctionNode = parsingTree.ConjunctionNode;
+var AlternativeNode = parsingTree.AlternativeNode;
+var ImplicationNode = parsingTree.ImplicationNode;
 
 function Parser() {
 
@@ -12,23 +12,23 @@ function Parser() {
 
   this.parse = function(str){
 
-    var parsingTree = new Tree(str);
+    var resultParsingTree = new Tree(str);
 
     try {
 
       for (var parser, i = 0, len = parsers.length; i < len; i++){
         parser = parsers[i];
 
-        if (!parsingTree.getRoot().hasChildren()){
-          parsingTree = parser.parse(parsingTree.getRoot().getValue());
+        if (!resultParsingTree.getRoot().hasChildren()){
+          resultParsingTree = parser.parse(resultParsingTree.getRoot().getValue());
 
-          if (parsingTree.getSize() === 0){
-            return parsingTree;
+          if (resultParsingTree.getSize() === 0){
+            return resultParsingTree;
           }
 
         } else {
 
-          this.parseTree(parsingTree, parser);
+          this.parseTree(resultParsingTree, parser);
 
         }
 
@@ -38,7 +38,7 @@ function Parser() {
       throw new Error('Parsing error: ' + e.message);
     }
 
-    return parsingTree;
+    return resultParsingTree;
 
   };
 
@@ -121,6 +121,5 @@ function ImplicationParser() {}
 ImplicationParser.prototype = new OperatorParser('=>', ImplicationNode);
 
 module.exports = {
-  Parser: Parser,
-  AtomParser: AtomParser
+  Parser: Parser
 };

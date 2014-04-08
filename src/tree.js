@@ -52,7 +52,7 @@ function Node(value){
   };
 
   this.hasRightChild = function () {
-    return !!this.getLeftChild();
+    return !!this.getRightChild();
   };
 
   this.hasChildren = function () {
@@ -67,31 +67,6 @@ function Node(value){
 
 }
 
-function AtomNode(value){
-  Node.call(this, value);
-}
-
-AtomNode.prototype = new Node();
-
-
-
-function ConjunctionNode(value){
-  Node.call(this, value);
-}
-
-ConjunctionNode.prototype = new Node();
-
-function AlternativeNode(value){
-  Node.call(this, value);
-}
-
-AlternativeNode.prototype = new Node();
-
-function ImplicationNode(value){
-  Node.call(this, value);
-}
-
-ImplicationNode.prototype = new Node();
 
 function Tree(root){
   var _rootNode;
@@ -151,9 +126,5 @@ function Tree(root){
 
 module.exports = {
   Tree: Tree,
-  Node: Node,
-  AtomNode: AtomNode,
-  ConjunctionNode: ConjunctionNode,
-  AlternativeNode: AlternativeNode,
-  ImplicationNode: ImplicationNode
+  Node: Node
 };
