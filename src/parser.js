@@ -1,6 +1,7 @@
 var tree = require('./tree');
 var Tree = tree.Tree;
 var parsingTree = require('./parsingTree');
+var ParsingTree = parsingTree.ParsingTree;
 var AtomNode = parsingTree.AtomNode;
 var ConjunctionNode = parsingTree.ConjunctionNode;
 var AlternativeNode = parsingTree.AlternativeNode;
@@ -12,7 +13,7 @@ function Parser() {
 
   this.parse = function(str){
 
-    var resultParsingTree = new Tree(str);
+    var resultParsingTree = new ParsingTree(str);
 
     try {
 
@@ -69,10 +70,24 @@ function AtomParser() {
 
   this.parse = function(str){
     if (!str) {
-      return new Tree();
+      return new ParsingTree();
     } else {
-      return new Tree(new AtomNode(str));
+
+      var negationsCount = countNegations(str);
+      var node = new AtomNode(str.slice(negationsCount));
+
+      if (negationsCount % 2) {
+        node.negate();
+      }
+
+      return new ParsingTree(node);
     }
+  };
+
+  function countNegations(str){
+    var match = str.match(/^!*/);
+
+    return match[0].length;
   }
 }
 
@@ -83,13 +98,13 @@ function OperatorParser(operator, NodeClass) {
   this.parse = function(str){
 
     if (!str) {
-      return new Tree();
+      return new ParsingTree();
     }
 
     var operatorIndex = str.lastIndexOf(operatorPattern);
 
     if (operatorIndex === -1){
-      return new Tree(str);
+      return new ParsingTree(str);
     }
 
     var leftSubstring = str.slice(0, operatorIndex);
@@ -104,9 +119,9 @@ function OperatorParser(operator, NodeClass) {
     var leftSubtree = this.parse(leftSubstring);
     root.setLeftSubtree(leftSubtree);
 
-    root.setRightSubtree(new Tree(rightSubstring));
+    root.setRightSubtree(new ParsingTree(rightSubstring));
 
-    return new Tree(root);
+    return new ParsingTree(root);
 
   };
 }

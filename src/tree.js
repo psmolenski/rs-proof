@@ -67,7 +67,6 @@ function Node(value){
 
 }
 
-
 function Tree(root){
   var _rootNode;
 
@@ -112,7 +111,6 @@ function Tree(root){
       }
     }
   };
-
 
   if (root instanceof Node){
     this.setRoot(root);

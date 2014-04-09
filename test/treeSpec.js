@@ -2,6 +2,9 @@ describe('tree', function () {
 
   var Tree = require('../src/tree.js').Tree;
   var Node = require('../src/tree.js').Node;
+  var AtomNode = require('../src/parsingTree.js').AtomNode;
+  var AlternativeNode = require('../src/parsingTree.js').AlternativeNode;
+  var ConjunctionNode = require('../src/parsingTree.js').ConjunctionNode;
 
   describe("Tree", function () {
     describe("constructor", function () {

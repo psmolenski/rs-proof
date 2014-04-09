@@ -1,0 +1,213 @@
+describe('ParsingTree', function () {
+
+  var ParsingTree = require('../src/parsingTree.js').ParsingTree;
+  var AtomNode = require('../src/parsingTree.js').AtomNode;
+  var AlternativeNode = require('../src/parsingTree.js').AlternativeNode;
+  var ConjunctionNode = require('../src/parsingTree.js').ConjunctionNode;
+  var ImplicationNode = require('../src/parsingTree.js').ImplicationNode;
+
+  describe("AtomNode", function () {
+    describe("constructor", function () {
+      it("should create an empty node", function () {
+        var node = new AtomNode();
+
+        expect(node.getValue()).toBeNull();
+        expect(node.isNegated()).toBe(false);
+
+      });
+
+      it("should create a node with a given value", function () {
+        var node = new AtomNode('a');
+
+        expect(node.getValue()).toEqual('a');
+        expect(node.isNegated()).toBe(false);
+
+      });
+
+      it("should create a node with a given value and negation", function () {
+        var node = new AtomNode('a', true);
+
+        expect(node.getValue()).toEqual('a');
+        expect(node.isNegated()).toBe(true);
+
+      });
+    });
+
+    describe("negation", function () {
+      it("should negate a node", function () {
+        var node = new AtomNode();
+
+        expect(node.isNegated()).toBe(false);
+
+        node.negate();
+
+        expect(node.isNegated()).toBe(true);
+      });
+
+      it("double negation should not change the negation value", function () {
+        var node = new AtomNode();
+
+        expect(node.isNegated()).toBe(false);
+
+        node.negate();
+        node.negate();
+
+        expect(node.isNegated()).toBe(false);
+
+        node.negate();
+
+        expect(node.isNegated()).toBe(true);
+      });
+    });
+  });
+
+  describe("ParsingTree", function () {
+    describe("negate", function () {
+      it("should negate a tree with a single atom", function () {
+        var tree = new ParsingTree(new AtomNode('a'));
+
+        expect(tree.getRoot().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot().isNegated()).toBe(true);
+        expect(tree.getSize()).toEqual(1);
+
+      });
+
+      it("should negate a tree with a single alternative", function () {
+        var alternative = new AlternativeNode();
+        alternative.setLeftChild(new AtomNode('a'));
+        alternative.setRightChild(new AtomNode('b'));
+        var tree = new ParsingTree(alternative);
+
+        expect(tree.getRoot() instanceof AlternativeNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(true);
+        expect(tree.getRoot().getRightChild().isNegated()).toBe(true);
+        expect(tree.getSize()).toEqual(3);
+
+      });
+
+      it("should negate a tree with 2 alternatives", function () {
+        var alternative1 = new AlternativeNode();
+        var alternative2 = new AlternativeNode();
+        alternative1.setLeftChild(new AtomNode('a'));
+        alternative1.setRightChild(alternative2);
+        alternative2.setLeftChild(new AtomNode('b'));
+        alternative2.setRightChild(new AtomNode('c'));
+
+        var tree = new ParsingTree(alternative1);
+
+        expect(tree.getRoot() instanceof AlternativeNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild() instanceof AlternativeNode).toBe(true);
+        expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(true);
+        expect(tree.getRoot().getRightChild() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(true);
+        expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(true);
+      });
+
+      it("should negate a tree with a single conjunction", function () {
+        var conjunction = new ConjunctionNode();
+        conjunction.setLeftChild(new AtomNode('a'));
+        conjunction.setRightChild(new AtomNode('b'));
+        var tree = new ParsingTree(conjunction);
+
+        expect(tree.getRoot() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot() instanceof AlternativeNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(true);
+        expect(tree.getRoot().getRightChild().isNegated()).toBe(true);
+        expect(tree.getSize()).toEqual(3);
+
+      });
+
+      it("should negate a tree with 2 conjunctions", function () {
+        var conjunction1 = new ConjunctionNode();
+        var conjunction2 = new ConjunctionNode();
+        conjunction1.setLeftChild(new AtomNode('a'));
+        conjunction1.setRightChild(conjunction2);
+        conjunction2.setLeftChild(new AtomNode('b'));
+        conjunction2.setRightChild(new AtomNode('c'));
+
+        var tree = new ParsingTree(conjunction1);
+
+        expect(tree.getRoot() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot() instanceof AlternativeNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(true);
+        expect(tree.getRoot().getRightChild() instanceof AlternativeNode).toBe(true);
+        expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(true);
+        expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(true);
+      });
+
+      it("should negate a tree with a single implication", function () {
+        var implication = new ImplicationNode();
+        implication.setLeftChild(new AtomNode('a'));
+        implication.setRightChild(new AtomNode('b'));
+        var tree = new ParsingTree(implication);
+
+        expect(tree.getRoot() instanceof ImplicationNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().isNegated()).toBe(true);
+        expect(tree.getSize()).toEqual(3);
+
+      });
+
+      it("should negate a tree with 2 implications", function () {
+        var implication1 = new ImplicationNode();
+        var implication2 = new ImplicationNode();
+        implication1.setLeftChild(new AtomNode('a'));
+        implication1.setRightChild(implication2);
+        implication2.setLeftChild(new AtomNode('b'));
+        implication2.setRightChild(new AtomNode('c'));
+
+        var tree = new ParsingTree(implication1);
+
+        expect(tree.getRoot() instanceof ImplicationNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild() instanceof ImplicationNode).toBe(true);
+        expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(false);
+
+        tree.negate();
+
+        expect(tree.getRoot() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild() instanceof ConjunctionNode).toBe(true);
+        expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(false);
+        expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(true);
+      });
+
+    });
+  });
+
+});

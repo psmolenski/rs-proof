@@ -22,6 +22,7 @@ describe('Parser', function () {
 
     expect(root instanceof AtomNode).toBe(true);
     expect(root.getValue()).toEqual('a');
+    expect(root.isNegated()).toBe(false);
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
 
@@ -38,7 +39,60 @@ describe('Parser', function () {
     var root = parsingTree.getRoot();
 
     expect(root instanceof AtomNode).toBe(true);
+    expect(root.isNegated()).toBe(false);
     expect(root.getValue()).toEqual('abcd');
+    expect(root.getLeftChild()).toBeNull();
+    expect(root.getLeftChild()).toBeNull();
+
+  });
+
+  it("should parse an atomic formula with single negation", function () {
+    var formula = "!a";
+
+    var parsingTree = parser.parse(formula);
+
+    expect(parsingTree.getSize()).toEqual(1);
+
+    var root = parsingTree.getRoot();
+
+    expect(root instanceof AtomNode).toBe(true);
+    expect(root.getValue()).toEqual('a');
+    expect(root.isNegated()).toBe(true);
+    expect(root.getLeftChild()).toBeNull();
+    expect(root.getLeftChild()).toBeNull();
+
+
+  });
+
+  it("should parse an atomic formula with double negation", function () {
+    var formula = "!!a";
+
+    var parsingTree = parser.parse(formula);
+
+    expect(parsingTree.getSize()).toEqual(1);
+
+    var root = parsingTree.getRoot();
+
+    expect(root instanceof AtomNode).toBe(true);
+    expect(root.getValue()).toEqual('a');
+    expect(root.isNegated()).toBe(false);
+    expect(root.getLeftChild()).toBeNull();
+    expect(root.getLeftChild()).toBeNull();
+
+  });
+
+  it("should parse an atomic formula with triple negation", function () {
+    var formula = "!!!a";
+
+    var parsingTree = parser.parse(formula);
+
+    expect(parsingTree.getSize()).toEqual(1);
+
+    var root = parsingTree.getRoot();
+
+    expect(root instanceof AtomNode).toBe(true);
+    expect(root.getValue()).toEqual('a');
+    expect(root.isNegated()).toBe(true);
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
 
