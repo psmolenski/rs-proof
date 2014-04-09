@@ -5,6 +5,7 @@ describe('RsTree', function () {
   var AtomNode = parsingTree.AtomNode;
   var AlternativeNode = parsingTree.AlternativeNode;
   var ConjunctionNode = parsingTree.ConjunctionNode;
+  var ImplicationNode = parsingTree.ImplicationNode;
   var Tree = require('../src/tree').Tree;
   var RsNode = rsTree.RsNode;
   var RsTree = rsTree.RsTree;
@@ -595,6 +596,28 @@ describe('RsTree', function () {
       expect(rightChildValue.length).toEqual(1);
       expect(rightChildValue[0].getValue()).toEqual('b');
 
+
+    });
+
+    it("should decompose a tree with a single implication", function () {
+      var implication = new ImplicationNode();
+      implication.setLeftChild(new AtomNode('a'));
+      implication.setRightChild(new AtomNode('b'));
+      var tree = new Tree(implication);
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.getSize()).toEqual(2);
+      var rootValue = resultTree.getRoot().getValue();
+      expect(rootValue.length).toEqual(1);
+      expect(rootValue[0] instanceof ImplicationNode).toBe(true);
+
+      var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
+      expect(leftChildValue.length).toEqual(2);
+      expect(leftChildValue[0].getValue()).toEqual('a');
+      expect(leftChildValue[0].isNegated()).toBe(true);
+      expect(leftChildValue[1].getValue()).toEqual('b');
+
+      expect(resultTree.getRoot().hasRightChild()).toBe(false)
 
     });
 

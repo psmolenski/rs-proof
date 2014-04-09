@@ -67,6 +67,18 @@ function RsNode(value){
       return [new RsNode(leftChild), new RsNode(rightChild)];
     }
 
+    if (formulaToDecompose instanceof parsingTree.ImplicationNode){
+
+      var leftSubtree = formulaToDecompose.getLeftSubtree();
+      leftSubtree.negate();
+
+      leftChild = previousFormulas
+        .concat([leftSubtree.getRoot(), formulaToDecompose.getRightChild()])
+        .concat(nextFormulas);
+
+      return [new RsNode(leftChild)];
+    }
+
   };
 
 }

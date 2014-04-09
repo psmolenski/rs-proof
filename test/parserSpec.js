@@ -5,7 +5,8 @@ describe('Parser', function () {
     Node = require('../src/tree').Node,
     AtomNode = require('../src/parsingTree').AtomNode,
     ConjunctionNode = require('../src/parsingTree').ConjunctionNode,
-    AlternativeNode = require('../src/parsingTree').AlternativeNode;
+    AlternativeNode = require('../src/parsingTree').AlternativeNode,
+    FormulaNode = require('../src/parsingTree').FormulaNode;
 
   beforeEach(function () {
     parser = new Parser();
@@ -26,6 +27,8 @@ describe('Parser', function () {
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
 
+    expect(parsingTree.toString()).toEqual('a');
+
 
   });
 
@@ -44,10 +47,12 @@ describe('Parser', function () {
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
 
+    expect(parsingTree.toString()).toEqual('abcd');
+
   });
 
   it("should parse an atomic formula with single negation", function () {
-    var formula = "!a";
+    var formula = "~a";
 
     var parsingTree = parser.parse(formula);
 
@@ -61,11 +66,13 @@ describe('Parser', function () {
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
 
+    expect(parsingTree.toString()).toEqual('~a');
+
 
   });
 
   it("should parse an atomic formula with double negation", function () {
-    var formula = "!!a";
+    var formula = "~~a";
 
     var parsingTree = parser.parse(formula);
 
@@ -79,10 +86,12 @@ describe('Parser', function () {
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
 
+    expect(parsingTree.toString()).toEqual('a');
+
   });
 
   it("should parse an atomic formula with triple negation", function () {
-    var formula = "!!!a";
+    var formula = "~~~a";
 
     var parsingTree = parser.parse(formula);
 
@@ -95,6 +104,8 @@ describe('Parser', function () {
     expect(root.isNegated()).toBe(true);
     expect(root.getLeftChild()).toBeNull();
     expect(root.getLeftChild()).toBeNull();
+
+    expect(parsingTree.toString()).toEqual('~a');
 
   });
 
@@ -128,6 +139,8 @@ describe('Parser', function () {
     expect(rightSubTree.getSize()).toEqual(1);
     expect(rightSubTree.getRoot() instanceof AtomNode).toBe(true);
     expect(rightSubTree.getRoot().getValue()).toEqual('b');
+
+    expect(parsingTree.toString()).toEqual('a AND b');
 
   });
 
@@ -176,6 +189,8 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('b');
 
+    expect(parsingTree.toString()).toEqual('a AND b AND foo AND bar');
+
   });
 
   /*
@@ -209,6 +224,8 @@ describe('Parser', function () {
     expect(rightSubTree.getSize()).toEqual(1);
     expect(rightSubTree.getRoot() instanceof AtomNode).toBe(true);
     expect(rightSubTree.getRoot().getValue()).toEqual('b');
+
+    expect(parsingTree.toString()).toEqual('a OR b');
 
 
   });
@@ -259,6 +276,8 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('b');
 
+    expect(parsingTree.toString()).toEqual('a OR b OR foo OR bar');
+
   });
 
 
@@ -308,6 +327,8 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('b');
 
+    expect(parsingTree.toString()).toEqual('a AND b OR foo OR bar');
+
   });
 
 
@@ -349,11 +370,15 @@ describe('Parser', function () {
 
     var leftSubTree3 = rightSubTree.getRoot().getLeftSubtree();
     expect(leftSubTree3.getSize()).toEqual(1);
+    expect(leftSubTree3.getRoot() instanceof FormulaNode).toBe(true);
     expect(leftSubTree3.getRoot().getValue()).toEqual('foo');
 
     var rightSubTree3 = rightSubTree.getRoot().getRightSubtree();
     expect(rightSubTree3.getSize()).toEqual(1);
+    expect(rightSubTree3.getRoot() instanceof AtomNode).toBe(true);
     expect(rightSubTree3.getRoot().getValue()).toEqual('bar');
+
+    expect(parsingTree.toString()).toEqual('a OR b OR foo AND bar');
 
   });
 
@@ -403,6 +428,8 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('foo');
 
+    expect(parsingTree.toString()).toEqual('a OR b AND foo AND bar');
+
   });
 
   /*
@@ -449,6 +476,8 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('bar');
 
+    expect(parsingTree.toString()).toEqual('a AND b OR foo AND bar');
+
   });
 
   /*
@@ -494,6 +523,8 @@ describe('Parser', function () {
     var rightSubTree3 = rightSubTree.getRoot().getRightSubtree();
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('bar');
+
+    expect(parsingTree.toString()).toEqual('a AND b => foo OR bar');
 
   });
 

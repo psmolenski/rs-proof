@@ -61,6 +61,10 @@ function ParsingTree(root){
 
 ParsingTree.prototype = new Tree();
 
+ParsingTree.prototype.toString = function () {
+  return this.getRoot().toString();
+};
+
 function FormulaNode(value) {
   Node.call(this, value);
 
@@ -91,11 +95,22 @@ function AtomNode(value, negated) {
 
 AtomNode.prototype = new FormulaNode();
 
+AtomNode.prototype.toString = function () {
+
+  var negation = this.isNegated() ? '~' : '';
+
+  return negation + this.getValue().toString();
+};
+
 function ConjunctionNode(value) {
   FormulaNode.call(this, value);
 }
 
 ConjunctionNode.prototype = new FormulaNode();
+
+ConjunctionNode.prototype.toString = function () {
+  return this.getLeftSubtree().toString() + ' AND ' + this.getRightSubtree().toString();
+}
 
 function AlternativeNode(value) {
   FormulaNode.call(this, value);
@@ -103,11 +118,19 @@ function AlternativeNode(value) {
 
 AlternativeNode.prototype = new FormulaNode();
 
+AlternativeNode.prototype.toString = function () {
+  return this.getLeftSubtree().toString() + ' OR ' + this.getRightSubtree().toString();
+}
+
 function ImplicationNode(value) {
   FormulaNode.call(this, value);
 }
 
 ImplicationNode.prototype = new FormulaNode();
+
+ImplicationNode.prototype.toString = function () {
+  return this.getLeftSubtree().toString() + ' => ' + this.getRightSubtree().toString();
+}
 
 module.exports = {
   ParsingTree: ParsingTree,

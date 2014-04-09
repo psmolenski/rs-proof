@@ -1,5 +1,4 @@
 var tree = require('./tree');
-var Tree = tree.Tree;
 var parsingTree = require('./parsingTree');
 var ParsingTree = parsingTree.ParsingTree;
 var AtomNode = parsingTree.AtomNode;
@@ -59,7 +58,7 @@ function Parser() {
       if (!root.getRightChild().hasChildren()){
         root.setRightSubtree(parser.parse(root.getRightChild().getValue()));
       } else {
-        this.parseTree(root.getLeftSubtree(), parser);
+        this.parseTree(root.getRightSubtree(), parser);
       }
     }
   };
@@ -71,21 +70,20 @@ function AtomParser() {
   this.parse = function(str){
     if (!str) {
       return new ParsingTree();
-    } else {
-
-      var negationsCount = countNegations(str);
-      var node = new AtomNode(str.slice(negationsCount));
-
-      if (negationsCount % 2) {
-        node.negate();
-      }
-
-      return new ParsingTree(node);
     }
+
+    var negationsCount = countNegations(str);
+    var node = new AtomNode(str.slice(negationsCount));
+
+    if (negationsCount % 2) {
+      node.negate();
+    }
+
+    return new ParsingTree(node);
   };
 
   function countNegations(str){
-    var match = str.match(/^!*/);
+    var match = str.match(/^~*/);
 
     return match[0].length;
   }
