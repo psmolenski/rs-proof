@@ -102,6 +102,13 @@ RsNode.prototype.isFundamental = function () {
   return false;
 
 };
+
+RsNode.prototype.toString = function () {
+  return '(' + this.getValue().map(function (formula) {
+    return formula.toString();
+  }).join(', ') + ')';
+};
+
 function RsTree(value){
 
   if (_.isUndefined(value)){

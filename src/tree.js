@@ -136,6 +136,45 @@ function Tree(root){
 
 }
 
+Tree.prototype.bfs = function (callback){
+  var waitingQueue = [];
+  var queue = [];
+  var node;
+
+  if (!this.hasRoot()){
+    return;
+  }
+
+  waitingQueue.push(this.getRoot());
+
+  while (waitingQueue.length > 0) {
+    copyItemsFromWaitingQueueToQueue();
+
+    callback(queue);
+
+    while (node = queue.pop()){
+      if (node.hasLeftChild()) {
+        waitingQueue.push(node.getLeftChild());
+      }
+
+      if (node.hasRightChild()){
+        waitingQueue.push(node.getRightChild());
+      }
+
+    }
+
+  }
+
+  function copyItemsFromWaitingQueueToQueue(){
+    while(waitingQueue.length > 0) {
+      queue.push(waitingQueue.pop());
+    }
+  }
+
+};
+
+
+
 module.exports = {
   Tree: Tree,
   Node: Node
