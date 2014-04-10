@@ -226,7 +226,7 @@ describe('ParsingTree', function () {
       var tree = new ParsingTree(atom);
 
 
-      expect(tree.toString()).toEqual('~a');
+      expect(tree.toString()).toEqual('!a');
 
     });
 
@@ -237,7 +237,7 @@ describe('ParsingTree', function () {
       alternative.setRightChild(new AtomNode('b'));
       var tree = new ParsingTree(alternative);
 
-      expect(tree.toString()).toEqual('a OR b');
+      expect(tree.toString()).toEqual('a + b');
 
     });
 
@@ -252,7 +252,7 @@ describe('ParsingTree', function () {
 
       var tree = new ParsingTree(alternative1);
 
-      expect(tree.toString()).toEqual('a OR b OR c');
+      expect(tree.toString()).toEqual('a + b + c');
 
     });
 
@@ -263,7 +263,7 @@ describe('ParsingTree', function () {
       conjunction.setRightChild(new AtomNode('b'));
       var tree = new ParsingTree(conjunction);
 
-      expect(tree.toString()).toEqual('a AND b');
+      expect(tree.toString()).toEqual('a * b');
 
     });
 
@@ -278,7 +278,7 @@ describe('ParsingTree', function () {
 
       var tree = new ParsingTree(conjunction1);
 
-      expect(tree.toString()).toEqual('a AND b AND c');
+      expect(tree.toString()).toEqual('a * b * c');
 
     });
 

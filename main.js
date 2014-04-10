@@ -1,4 +1,4 @@
-var Parser = require('./src/parser').Parser;
+var Parser = require('./src/parser/parser').Parser;
 var createFromParsingTree = require('./src/rsTree').createFromParsingTree;
 
 var expression = process.argv.slice(2).join(' ');
