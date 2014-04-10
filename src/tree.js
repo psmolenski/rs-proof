@@ -112,6 +112,20 @@ function Tree(root){
     }
   };
 
+  this.getLeaves = function () {
+    var leaves = [];
+
+    this.forEachNode(function (node) {
+      if (!node.hasChildren()){
+        leaves.push(node);
+      }
+    });
+
+    return leaves;
+
+
+  };
+
   if (root instanceof Node){
     this.setRoot(root);
   } else if (typeof root != 'undefined' && root !== null){

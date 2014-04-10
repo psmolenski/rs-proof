@@ -85,6 +85,23 @@ function RsNode(value){
 
 RsNode.prototype = new tree.Node();
 
+RsNode.prototype.isFundamental = function () {
+  var formulas = this.getValue();
+
+  for (var i = 0, len = formulas.length; i < len; i++){
+    var formula = formulas[i];
+
+    for (var j = i; j < len; j++){
+      if (formula.getValue() == formulas[j].getValue() && formula.isNegated() != formulas[j].isNegated()){
+        return true;
+      }
+    }
+
+  }
+
+  return false;
+
+};
 function RsTree(value){
 
   if (_.isUndefined(value)){
@@ -100,6 +117,31 @@ function RsTree(value){
 }
 
 RsTree.prototype = new tree.Tree();
+
+RsTree.prototype.isProof = function () {
+
+  if (!this.hasRoot()) {
+    return false;
+  }
+
+  return this.getLeaves().every(function (node) {
+    return node.isFundamental();
+  });
+};
+
+RsTree.prototype.toString = function () {
+
+  var str = '';
+
+  this.bfs(function (nodesOnLevel) {
+    str += '[' + nodesOnLevel.map(function (node) {
+      return node.toString();
+    }).join(', ') + '] \n';
+  });
+
+  return str;
+
+};
 
 function createFromParsingTree(parsingTree){
 

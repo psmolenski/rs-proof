@@ -9,6 +9,7 @@ describe('RsTree', function () {
   var Tree = require('../src/tree').Tree;
   var RsNode = rsTree.RsNode;
   var RsTree = rsTree.RsTree;
+  var createFromParsingTree = rsTree.createFromParsingTree;
 
   describe("RsNode", function () {
 
@@ -477,7 +478,7 @@ describe('RsTree', function () {
   });
 
   describe("createFromParsingTree", function () {
-    var createFromParsingTree = rsTree.createFromParsingTree;
+
 
 
     it("should throw an error if no parsing tree has been supplied", function () {
@@ -696,6 +697,49 @@ describe('RsTree', function () {
       expect(rightChildValue[0].getValue()).toEqual('a');
       expect(rightChildValue[1] instanceof AtomNode).toBe(true);
       expect(rightChildValue[1].getValue()).toEqual('c');
+    });
+
+  });
+
+  describe("isProof", function () {
+    it("empty tree is not a proof", function () {
+      var tree = new Tree();
+
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isProof()).toBe(false);
+
+    });
+
+    it("tree with single formula is not a proof", function () {
+      var root = new AtomNode('a');
+      var tree = new Tree(root);
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isProof()).toBe(false);
+
+    });
+
+    it("tree for (a OR ~a) is a proof", function () {
+      var root = new AlternativeNode();
+      root.setLeftChild(new AtomNode('a'));
+      root.setRightChild(new AtomNode('a', true));
+      var tree = new Tree(root);
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isProof()).toBe(true);
+
+    });
+
+    it("tree for (a OR a) is not a proof", function () {
+      var root = new AlternativeNode();
+      root.setLeftChild(new AtomNode('a'));
+      root.setRightChild(new AtomNode('a'));
+      var tree = new Tree(root);
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isProof()).toBe(false);
+
     });
 
   });
