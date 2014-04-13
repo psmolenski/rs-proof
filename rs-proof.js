@@ -7475,7 +7475,7 @@ function ParsingTree(root){
 
 }
 
-ParsingTree.prototype = new Tree();
+ParsingTree.prototype = _.create(Tree.prototype, {constructor: ParsingTree});
 
 ParsingTree.prototype.toString = function () {
 
@@ -7501,7 +7501,7 @@ function FormulaNode(value) {
   }
 }
 
-FormulaNode.prototype = new Node();
+FormulaNode.prototype = _.create(Node.prototype, {constructor: FormulaNode});
 
 function AtomNode(value, negated) {
   FormulaNode.call(this, value);
@@ -7514,10 +7514,23 @@ function AtomNode(value, negated) {
 
   this.negate = function () {
     _negated = !_negated;
-  }
+  };
+
+  var originalCopy = this.copy;
+
+  this.copy = function () {
+    var nodeCopy = originalCopy.call(this);
+
+    if (this.isNegated()){
+      nodeCopy.negate();
+    }
+
+    return nodeCopy;
+
+  };
 }
 
-AtomNode.prototype = new FormulaNode();
+AtomNode.prototype = _.create(FormulaNode.prototype, {constructor: AtomNode});
 
 AtomNode.prototype.toString = function () {
 
@@ -7530,7 +7543,7 @@ function ConjunctionNode(value) {
   FormulaNode.call(this, value);
 }
 
-ConjunctionNode.prototype = new FormulaNode();
+ConjunctionNode.prototype = _.create(FormulaNode.prototype, {constructor: ConjunctionNode});
 
 ConjunctionNode.prototype.toString = function () {
   return this.getLeftSubtree().toString() + ' * ' + this.getRightSubtree().toString();
@@ -7540,7 +7553,7 @@ function AlternativeNode(value) {
   FormulaNode.call(this, value);
 }
 
-AlternativeNode.prototype = new FormulaNode();
+AlternativeNode.prototype = _.create(FormulaNode.prototype, {constructor: AlternativeNode});
 
 AlternativeNode.prototype.toString = function () {
   return this.getLeftSubtree().toString() + ' + ' + this.getRightSubtree().toString();
@@ -7550,7 +7563,7 @@ function ImplicationNode(value) {
   FormulaNode.call(this, value);
 }
 
-ImplicationNode.prototype = new FormulaNode();
+ImplicationNode.prototype = _.create(FormulaNode.prototype, {constructor: ImplicationNode});
 
 ImplicationNode.prototype.toString = function () {
   return this.getLeftSubtree().toString() + ' => ' + this.getRightSubtree().toString();
@@ -7634,61 +7647,66 @@ function RsNode(value){
 
   };
 
-  function isFormulaDecomposable(formula){
-    return !(formula instanceof AtomNode);
+  function isFormulaDecomposable(formulaTree){
+    if (!formulaTree.hasRoot()) {
+      return false;
+    }
+
+    return !(formulaTree.getRoot() instanceof AtomNode);
   }
 
   this.decompose = function () {
     var formulas = this.getValue();
-    var formulaToDecompose;
+    var formulaTreeToDecompose;
     for (var indexOfFormula = 0, len = formulas.length; indexOfFormula < len; indexOfFormula++){
       if (isFormulaDecomposable(formulas[indexOfFormula])){
-        formulaToDecompose = formulas[indexOfFormula];
+        formulaTreeToDecompose = formulas[indexOfFormula];
         break;
       }
     }
 
-    if (_.isUndefined(formulaToDecompose)){
+    if (_.isUndefined(formulaTreeToDecompose)){
       throw new Error('No decomposable formula has been found');
     }
 
+    var formulaRoot = formulaTreeToDecompose.getRoot();
     var previousFormulas = formulas.slice(0, indexOfFormula);
     var nextFormulas = formulas.slice(indexOfFormula + 1);
 
-    var leftChild;
-    var rightChild;
+    var leftSubtree;
+    var rightSubtree;
 
-    if (formulaToDecompose instanceof parsingTree.AlternativeNode){
+    if (formulaRoot instanceof parsingTree.AlternativeNode){
 
-      leftChild = previousFormulas
-        .concat([formulaToDecompose.getLeftChild(), formulaToDecompose.getRightChild()])
+      leftSubtree = previousFormulas
+        .concat([formulaRoot.getLeftSubtree().copy(), formulaRoot.getRightSubtree().copy()])
         .concat(nextFormulas);
 
-      return [new RsNode(leftChild)];
+      return [new RsNode(leftSubtree)];
     }
 
-    if (formulaToDecompose instanceof parsingTree.ConjunctionNode){
-      leftChild = previousFormulas
-        .concat([formulaToDecompose.getLeftChild()])
+    if (formulaRoot instanceof parsingTree.ConjunctionNode){
+      leftSubtree = previousFormulas
+        .concat([formulaRoot.getLeftSubtree().copy()])
         .concat(nextFormulas);
 
-      rightChild = previousFormulas
-        .concat([formulaToDecompose.getRightChild()])
+      rightSubtree = previousFormulas
+        .concat([formulaRoot.getRightSubtree().copy()])
         .concat(nextFormulas);
 
-      return [new RsNode(leftChild), new RsNode(rightChild)];
+      return [new RsNode(leftSubtree), new RsNode(rightSubtree)];
     }
 
-    if (formulaToDecompose instanceof parsingTree.ImplicationNode){
+    if (formulaRoot instanceof parsingTree.ImplicationNode){
 
-      var leftSubtree = formulaToDecompose.getLeftSubtree();
-      leftSubtree.negate();
+      var tmpLeftSubtree = formulaRoot.getLeftSubtree().copy();
+      tmpLeftSubtree.negate();
 
-      leftChild = previousFormulas
-        .concat([leftSubtree.getRoot(), formulaToDecompose.getRightChild()])
+      leftSubtree = previousFormulas
+        .concat([tmpLeftSubtree, formulaRoot.getRightSubtree().copy()])
         .concat(nextFormulas);
 
-      return [new RsNode(leftChild)];
+      return [new RsNode(leftSubtree)];
     }
 
   };
@@ -7698,13 +7716,13 @@ function RsNode(value){
 RsNode.prototype = new tree.Node();
 
 RsNode.prototype.isFundamental = function () {
-  var formulas = this.getValue();
+  var formulaTries = this.getValue();
 
-  for (var i = 0, len = formulas.length; i < len; i++){
-    var formula = formulas[i];
+  for (var i = 0, len = formulaTries.length; i < len; i++){
+    var formula = formulaTries[i].getRoot();
 
     for (var j = i; j < len; j++){
-      if (formula.getValue() == formulas[j].getValue() && formula.isNegated() != formulas[j].isNegated()){
+      if (formula.getValue() == formulaTries[j].getRoot().getValue() && formula.isNegated() != formulaTries[j].getRoot().isNegated()){
         return true;
       }
     }
@@ -7716,9 +7734,9 @@ RsNode.prototype.isFundamental = function () {
 };
 
 RsNode.prototype.toString = function () {
-  return '(' + this.getValue().map(function (formula) {
+  return '[ ' + this.getValue().map(function (formula) {
     return formula.toString();
-  }).join(', ') + ')';
+  }).join(', ') + ' ]';
 };
 
 function RsTree(value){
@@ -7756,7 +7774,7 @@ RsTree.prototype.isSatisfiable = function () {
     return true;
   }
 
-  var rootValue = this.getRoot().getValue()[0];
+  var rootValue = this.getRoot().getValue()[0].getRoot();
   var parsingTree = new ParsingTree(rootValue);
   parsingTree.negate();
   var rsTree = createFromParsingTree(parsingTree);
@@ -7780,7 +7798,7 @@ RsTree.prototype.toString = function () {
 
 function createFromParsingTree(parsingTree){
 
-  if (!parsingTree || !(parsingTree instanceof tree.Tree)){
+  if (!parsingTree || !(parsingTree instanceof ParsingTree)){
     throw new Error('No parsing tree supplied');
   }
 
@@ -7788,7 +7806,7 @@ function createFromParsingTree(parsingTree){
     return new RsTree();
   }
 
-  var rsTree = new RsTree(parsingTree.getRoot());
+  var rsTree = new RsTree(parsingTree.copy());
 
   return decompose(rsTree);
 
@@ -7887,6 +7905,21 @@ function Node(value){
     return this.hasLeftChild() || this.hasRightChild();
   };
 
+  this.copy = function () {
+    var nodeCopy = new (this.constructor)();
+    nodeCopy.setValue(this.getValue());
+
+    if (this.hasLeftChild()) {
+      nodeCopy.setLeftChild(this.getLeftChild().copy());
+    }
+
+    if (this.hasRightChild()) {
+      nodeCopy.setRightChild(this.getRightChild().copy());
+    }
+
+    return nodeCopy;
+  };
+
   if (typeof value == 'undefined'){
     this.setValue(null);
   } else {
@@ -7952,6 +7985,13 @@ function Tree(root){
     return leaves;
 
 
+  };
+
+  this.copy = function () {
+
+    var root = this.hasRoot() ? this.getRoot().copy() : null;
+
+    return new (this.constructor)(root)
   };
 
   if (root instanceof Node){
@@ -8160,7 +8200,8 @@ angular.module('rs-proof')
              .attr("class", "node")
              .attr("transform", function(d)
              {
-               return "translate(" + d.y + "," + d.x + ")";
+               var x = d.depth == 0 ? d.y : d.y - options.nodeRadius - 3;
+               return "translate(" + x  + "," + d.x + ")";
              });
 
            nodeGroup.append("svg:circle")
@@ -8170,29 +8211,28 @@ angular.module('rs-proof')
              .attr("r", options.nodeRadius);
 
            nodeGroup.append("svg:text")
-             .attr("text-anchor", function(d)
-             {
-               return d.hasChildren() ? "end" : "start";
-             })
+             .attr("text-anchor", 'end')
              .attr("dx", function(d)
              {
-               var gap = 2 * options.nodeRadius;
-               return d.hasChildren() ? -gap : gap;
+               var gap = 1.5 * options.nodeRadius;
+               return -gap;
              })
-             .attr("dy", 3)
+             .attr("dy", function (d) {
+               return d.depth == 0 ? 0 : d.depth % 2 ? 20 : -20;
+             })
              .text(function(d)
              {
                return d.toString();
              });
 
 
-           svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
-
-           function zoom() {
-             var transX = d3.event.translate[0] + maxLabelLength*options.fontSize*0.8;
-             var transY = d3.event.translate[1];
-             layoutRoot.attr("transform", "translate(" + transX + ',' + 0 + ")");
-           }
+//           svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
+//
+//           function zoom() {
+//             var transX = d3.event.translate[0] + maxLabelLength*options.fontSize*0.8;
+//             var transY = d3.event.translate[1];
+//             layoutRoot.attr("transform", "translate(" + transX + ',' + 0 + ")");
+//           }
          }
 
          scope.$watch('tree', function (tree) {

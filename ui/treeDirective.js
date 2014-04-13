@@ -130,7 +130,8 @@ angular.module('rs-proof')
              .attr("class", "node")
              .attr("transform", function(d)
              {
-               return "translate(" + d.y + "," + d.x + ")";
+               var x = d.depth == 0 ? d.y : d.y - options.nodeRadius - 3;
+               return "translate(" + x  + "," + d.x + ")";
              });
 
            nodeGroup.append("svg:circle")
@@ -140,29 +141,28 @@ angular.module('rs-proof')
              .attr("r", options.nodeRadius);
 
            nodeGroup.append("svg:text")
-             .attr("text-anchor", function(d)
-             {
-               return d.hasChildren() ? "end" : "start";
-             })
+             .attr("text-anchor", 'end')
              .attr("dx", function(d)
              {
-               var gap = 2 * options.nodeRadius;
-               return d.hasChildren() ? -gap : gap;
+               var gap = 1.5 * options.nodeRadius;
+               return -gap;
              })
-             .attr("dy", 3)
+             .attr("dy", function (d) {
+               return d.depth == 0 ? 0 : d.depth % 2 ? 20 : -20;
+             })
              .text(function(d)
              {
                return d.toString();
              });
 
 
-           svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
-
-           function zoom() {
-             var transX = d3.event.translate[0] + maxLabelLength*options.fontSize*0.8;
-             var transY = d3.event.translate[1];
-             layoutRoot.attr("transform", "translate(" + transX + ',' + 0 + ")");
-           }
+//           svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
+//
+//           function zoom() {
+//             var transX = d3.event.translate[0] + maxLabelLength*options.fontSize*0.8;
+//             var transY = d3.event.translate[1];
+//             layoutRoot.attr("transform", "translate(" + transX + ',' + 0 + ")");
+//           }
          }
 
          scope.$watch('tree', function (tree) {

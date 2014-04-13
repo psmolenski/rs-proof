@@ -110,9 +110,9 @@ RsNode.prototype.isFundamental = function () {
 };
 
 RsNode.prototype.toString = function () {
-  return '(' + this.getValue().map(function (formula) {
+  return '[' + this.getValue().map(function (formula) {
     return formula.toString();
-  }).join(', ') + ')';
+  }).join(', ') + ']';
 };
 
 function RsTree(value){
