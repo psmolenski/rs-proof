@@ -145,24 +145,21 @@ angular.module('rs-proof')
              .attr("dx", function(d)
              {
                var gap = 1.5 * options.nodeRadius;
-               return -gap;
+               return d.depth == 0 || !d.hasChildren() ? -gap: 0;
              })
              .attr("dy", function (d) {
-               return d.depth == 0 ? 0 : d.depth % 2 ? 20 : -20;
+
+               if (d.depth == 0 || !d.hasChildren()) {
+                 return 0;
+               }
+
+               return d.depth % 2 ? 20 : -20;
              })
              .text(function(d)
              {
                return d.toString();
              });
 
-
-//           svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
-//
-//           function zoom() {
-//             var transX = d3.event.translate[0] + maxLabelLength*options.fontSize*0.8;
-//             var transY = d3.event.translate[1];
-//             layoutRoot.attr("transform", "translate(" + transX + ',' + 0 + ")");
-//           }
          }
 
          scope.$watch('tree', function (tree) {

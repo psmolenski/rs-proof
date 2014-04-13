@@ -7734,9 +7734,9 @@ RsNode.prototype.isFundamental = function () {
 };
 
 RsNode.prototype.toString = function () {
-  return '[ ' + this.getValue().map(function (formula) {
+  return '[' + this.getValue().map(function (formula) {
     return formula.toString();
-  }).join(', ') + ' ]';
+  }).join(', ') + ']';
 };
 
 function RsTree(value){
@@ -7774,10 +7774,10 @@ RsTree.prototype.isSatisfiable = function () {
     return true;
   }
 
-  var rootValue = this.getRoot().getValue()[0].getRoot();
-  var parsingTree = new ParsingTree(rootValue);
-  parsingTree.negate();
-  var rsTree = createFromParsingTree(parsingTree);
+  var originalParsingTree = this.getRoot().getValue()[0];
+  var parsingTreeCopy = originalParsingTree.copy();
+  parsingTreeCopy.negate();
+  var rsTree = createFromParsingTree(parsingTreeCopy);
 
   return !rsTree.isProof();
 };
@@ -7794,6 +7794,57 @@ RsTree.prototype.toString = function () {
 
   return str;
 
+};
+
+RsTree.prototype.getSampleValuation = function () {
+  var leaves = this.getLeaves();
+
+  if (!leaves){
+    return [];
+  }
+
+  var leave = leaves[0];
+  var tries = leave.getValue();
+  var result = [];
+
+  tries.forEach(function (tree) {
+     var atom = tree.getRoot();
+
+      result.push({
+        name: atom.getValue(),
+        value: atom.isNegated() ? 0 : 1
+      });
+
+  });
+
+  return result;
+};
+
+RsTree.prototype.getSampleNotSatisfyingValuation = function () {
+  var leaves = this.getLeaves();
+
+  if (!leaves){
+    return [];
+  }
+
+  var leave = _.find(leaves, function (leave) {
+    return !leave.isFundamental();
+  });
+
+  var tries = leave.getValue();
+  var result = [];
+
+  tries.forEach(function (tree) {
+    var atom = tree.getRoot();
+
+    result.push({
+      name: atom.getValue(),
+      value: atom.isNegated() ? 1 : 0
+    });
+
+  });
+
+  return result;
 };
 
 function createFromParsingTree(parsingTree){
@@ -8066,6 +8117,37 @@ angular.module('rs-proof')
       var parsingTree = parser.parse($scope.formula);
       $scope.rsTree = createFromParsingTree(parsingTree);
     };
+
+    $scope.$watch('rsTree', function (tree) {
+      if (tree) {
+        $scope.isProof = tree.isProof();
+        $scope.isSatisfiable = tree.isSatisfiable();
+
+        if (!$scope.isProof && $scope.isSatisfiable){
+          $scope.satisfyingValuations = tree.getSampleValuation();
+          $scope.notSatisfyingValuations = tree.getSampleNotSatisfyingValuation();
+        }
+
+      }
+    });
+
+    $scope.checkStatus = function () {
+      if ($scope.isProof){
+        return 'valid';
+      }
+
+      if (!$scope.isProof && $scope.isSatisfiable){
+        return 'satisfiable';
+      }
+
+      if (!$scope.isProof && !$scope.isSatisfiable){
+        return 'not-satisfiable';
+      }
+
+
+    };
+
+
   });
 },{"../src/parser/parser":3,"../src/rsTree":5}],9:[function(require,module,exports){
 angular.module('rs-proof')
@@ -8215,24 +8297,21 @@ angular.module('rs-proof')
              .attr("dx", function(d)
              {
                var gap = 1.5 * options.nodeRadius;
-               return -gap;
+               return d.depth == 0 || !d.hasChildren() ? -gap: 0;
              })
              .attr("dy", function (d) {
-               return d.depth == 0 ? 0 : d.depth % 2 ? 20 : -20;
+
+               if (d.depth == 0 || !d.hasChildren()) {
+                 return 0;
+               }
+
+               return d.depth % 2 ? 20 : -20;
              })
              .text(function(d)
              {
                return d.toString();
              });
 
-
-//           svg.call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
-//
-//           function zoom() {
-//             var transX = d3.event.translate[0] + maxLabelLength*options.fontSize*0.8;
-//             var transY = d3.event.translate[1];
-//             layoutRoot.attr("transform", "translate(" + transX + ',' + 0 + ")");
-//           }
          }
 
          scope.$watch('tree', function (tree) {

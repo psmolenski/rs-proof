@@ -54,6 +54,31 @@
             top: -2px;
         }
 
+        .checkResult {
+            padding: 40px 20px;
+            margin-bottom: 20px;
+        }
+
+        .checkResult h1{
+            margin: 0;
+            color: #fdfdfd;
+        }
+
+        .checkResult h1 .glyphicon{
+            font-size: 0.8em;
+        }
+
+        .checkResult.valid{
+            background-color: #4dbf4d;
+        }
+
+        .checkResult.satisfiable {
+            background-color: #2bc1e6;
+        }
+
+        .checkResult.not-satisfiable {
+            background-color: #d9534f;
+        }
 
 
     </style>
@@ -61,37 +86,75 @@
 <body ng-app="rs-proof" ng-controller="MainCtrl">
 
 <header class="navbar navbar-default">
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-md-2">
         <h2 class="navbar-header"><i class="glyphicon glyphicon-th"></i> <strong>RS</strong> proof</h2>
-        <div class="col-xs-10 text-center">
-            <form class="form-inline navbar-form">
-                <input type="text" class="form-control input-lg formula-input" ng-model="formula"/>
-                <button type="button" class="btn btn-primary btn-lg" ng-click="testFormula()" ng-disabled="!formula">Check</button>
-                <button class="btn btn-link navbar-btn navbar-right">Samples</button>
+    </div>
+    <div class="col-xs-12 col-md-10 text-center">
+        <form class="form-inline navbar-form" ng-submit="testFormula()">
+            <input type="text" class="form-control input-lg formula-input" ng-model="formula"/>
+            <button type="submit" class="btn btn-primary btn-lg" ng-disabled="!formula">Check</button>
+            <button class="btn btn-link navbar-btn navbar-right">Samples</button>
 
-            </form>
-        </div>
+        </form>
     </div>
 </header>
 
 
-<div class="col-xs-12">
-    <section ng-show="rsTree">
+<section ng-show="rsTree" class="text-center checkResult" ng-class="checkStatus()">
 
-        <div class="alert alert-success" ng-if="rsTree.isProof()">
-            Formula is valid
+    <h1 ng-if="isProof === true">
+        <i class="glyphicon glyphicon-ok-sign"></i> Formula is valid
+    </h1>
+
+    <h1 ng-if="isProof === false && isSatisfiable === true">
+        <i class="glyphicon glyphicon-record"></i> Formula is satisfiable
+    </h1>
+
+    <h1 ng-if="isProof === false && isSatisfiable === false">
+        <i class="glyphicon glyphicon-remove-sign"></i> Formula is not satisfiable
+    </h1>
+</section>
+
+<div class="col-xs-12" ng-show="isProof === false && isSatisfiable === true">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Sample satisfying valuation</div>
+                <div class="panel-body">
+                    <ul class="list-inline">
+                        <li ng-repeat="valuation in satisfyingValuations">
+                            <strong ng-bind="valuation.name"></strong>: <span ng-bind="valuation.value"></span>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
         </div>
 
-        <!--<div class="alert alert-info" ng-if="!rsTree.isProof() && rsTree.isSatisfiable()">-->
-            <!--Formula is satisfiable-->
-        <!--</div>-->
+        <div class="col-xs-12 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Sample not satisfying valuation</div>
+                <div class="panel-body">
+                    <ul class="list-inline">
+                        <li ng-repeat="valuation in notSatisfyingValuations">
+                            <strong ng-bind="valuation.name"></strong>: <span ng-bind="valuation.value"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <!--<div class="alert alert-danger" ng-if="!rsTree.isProof() && !rsTree.isSatisfiable()">-->
-            <!--Formula is not satisfiable-->
-        <!--</div>-->
 
-        <div tree tree-data="rsTree"></div>
-    </section>
+</div>
+
+<div class="col-xs-12" ng-show="rsTree">
+    <div class="panel panel-default">
+        <div class="panel-heading">Decomposition tree</div>
+        <div class="panel-body">
+            <div tree tree-data="rsTree"></div>
+        </div>
+    </div>
 </div>
 
 
@@ -101,7 +164,6 @@
 <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
 <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="buildTree.js"></script>
 <script type="text/javascript" src="rs-proof.js"></script>
 
 </body>

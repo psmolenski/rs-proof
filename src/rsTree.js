@@ -150,10 +150,10 @@ RsTree.prototype.isSatisfiable = function () {
     return true;
   }
 
-  var rootValue = this.getRoot().getValue()[0].getRoot();
-  var parsingTree = new ParsingTree(rootValue);
-  parsingTree.negate();
-  var rsTree = createFromParsingTree(parsingTree);
+  var originalParsingTree = this.getRoot().getValue()[0];
+  var parsingTreeCopy = originalParsingTree.copy();
+  parsingTreeCopy.negate();
+  var rsTree = createFromParsingTree(parsingTreeCopy);
 
   return !rsTree.isProof();
 };
@@ -170,6 +170,57 @@ RsTree.prototype.toString = function () {
 
   return str;
 
+};
+
+RsTree.prototype.getSampleValuation = function () {
+  var leaves = this.getLeaves();
+
+  if (!leaves){
+    return [];
+  }
+
+  var leave = leaves[0];
+  var tries = leave.getValue();
+  var result = [];
+
+  tries.forEach(function (tree) {
+     var atom = tree.getRoot();
+
+      result.push({
+        name: atom.getValue(),
+        value: atom.isNegated() ? 0 : 1
+      });
+
+  });
+
+  return result;
+};
+
+RsTree.prototype.getSampleNotSatisfyingValuation = function () {
+  var leaves = this.getLeaves();
+
+  if (!leaves){
+    return [];
+  }
+
+  var leave = _.find(leaves, function (leave) {
+    return !leave.isFundamental();
+  });
+
+  var tries = leave.getValue();
+  var result = [];
+
+  tries.forEach(function (tree) {
+    var atom = tree.getRoot();
+
+    result.push({
+      name: atom.getValue(),
+      value: atom.isNegated() ? 1 : 0
+    });
+
+  });
+
+  return result;
 };
 
 function createFromParsingTree(parsingTree){
