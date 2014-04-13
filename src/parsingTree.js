@@ -63,7 +63,15 @@ function ParsingTree(root){
 ParsingTree.prototype = new Tree();
 
 ParsingTree.prototype.toString = function () {
-  return this.getRoot().toString();
+
+  var formulaTemplate = '<%= formula %>';
+
+  if (!(this.getRoot() instanceof AtomNode)){
+    formulaTemplate = '(' + formulaTemplate + ')';
+  }
+
+  return _.template(formulaTemplate, {formula: this.getRoot().toString()});
+
 };
 
 function FormulaNode(value) {
@@ -144,9 +152,9 @@ function createFromParsingQueue(parsingQueue){
     if (token.type == 2){
       resultStack.push(new AtomNode(token.value));
     } else if (token.type == 73){
-      arg1 = resultStack.pop();
+      arg1 = new ParsingTree(resultStack.pop());
       arg1.negate();
-      resultStack.push(arg1)
+      resultStack.push(arg1.getRoot());
     } else if (token.type == 65) {
       var alternative = new AlternativeNode();
       arg2 = resultStack.pop();

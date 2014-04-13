@@ -139,7 +139,7 @@ describe('Parser', function () {
     expect(rightSubTree.getRoot() instanceof AtomNode).toBe(true);
     expect(rightSubTree.getRoot().getValue()).toEqual('b');
 
-    expect(parsingTree.toString()).toEqual('a * b');
+    expect(parsingTree.toString()).toEqual('(a * b)');
 
   });
 
@@ -167,7 +167,7 @@ describe('Parser', function () {
     expect(rightSubTree.getRoot().getValue()).toEqual('b');
     expect(rightSubTree.getRoot().isNegated()).toBe(true);
 
-    expect(parsingTree.toString()).toEqual('a * !b');
+    expect(parsingTree.toString()).toEqual('(a * !b)');
 
   });
 
@@ -216,7 +216,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('b');
 
-    expect(parsingTree.toString()).toEqual('a * b * foo * bar');
+    expect(parsingTree.toString()).toEqual('(((a * b) * foo) * bar)');
 
   });
 
@@ -251,7 +251,7 @@ describe('Parser', function () {
     expect(rightSubTree.getRoot() instanceof AtomNode).toBe(true);
     expect(rightSubTree.getRoot().getValue()).toEqual('b');
 
-    expect(parsingTree.toString()).toEqual('a + b');
+    expect(parsingTree.toString()).toEqual('(a + b)');
 
 
   });
@@ -302,7 +302,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('b');
 
-    expect(parsingTree.toString()).toEqual('a + b + foo + bar');
+    expect(parsingTree.toString()).toEqual('(((a + b) + foo) + bar)');
 
   });
 
@@ -353,7 +353,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('b');
 
-    expect(parsingTree.toString()).toEqual('a * b + foo + bar');
+    expect(parsingTree.toString()).toEqual('(((a * b) + foo) + bar)');
 
   });
 
@@ -406,7 +406,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getRoot() instanceof AtomNode).toBe(true);
     expect(rightSubTree3.getRoot().getValue()).toEqual('bar');
 
-    expect(parsingTree.toString()).toEqual('a + b + foo * bar');
+    expect(parsingTree.toString()).toEqual('((a + b) + (foo * bar))');
 
   });
 
@@ -456,7 +456,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('foo');
 
-    expect(parsingTree.toString()).toEqual('a + b * foo * bar');
+    expect(parsingTree.toString()).toEqual('(a + ((b * foo) * bar))');
 
   });
 
@@ -504,7 +504,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('bar');
 
-    expect(parsingTree.toString()).toEqual('a * b + foo * bar');
+    expect(parsingTree.toString()).toEqual('((a * b) + (foo * bar))');
 
   });
 
@@ -553,7 +553,7 @@ describe('Parser', function () {
     expect(rightSubTree3.getSize()).toEqual(1);
     expect(rightSubTree3.getRoot().getValue()).toEqual('bar');
 
-    expect(parsingTree.toString()).toEqual('a * b => foo + bar');
+    expect(parsingTree.toString()).toEqual('((a * b) => (foo + bar))');
 
   });
 
