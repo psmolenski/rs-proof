@@ -132,7 +132,7 @@ describe('RsTree', function () {
       it("should return false if node contains only Atoms", function () {
         var node = new RsNode();
 
-        node.setValue([new AtomNode('a'), new AtomNode('b')]);
+        node.setValue([new ParsingTree(new AtomNode('a')), new ParsingTree(new AtomNode('b'))]);
 
         expect(node.isDecomposable()).toBe(false);
 
@@ -145,9 +145,9 @@ describe('RsTree', function () {
         var root = new AlternativeNode();
         root.setLeftChild(new AtomNode('a'));
         root.setRightChild(new AtomNode('b'));
-        var tree = new Tree(root);
+        var tree = new ParsingTree(root);
 
-        var rsNode = new RsNode([root]);
+        var rsNode = new RsNode([tree]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -158,10 +158,12 @@ describe('RsTree', function () {
         var rsNodeValue = rsNode.getValue();
 
         expect(rsNodeValue.length).toEqual(2);
-        expect(rsNodeValue[0] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[0].getValue()).toEqual('a');
-        expect(rsNodeValue[1] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[1].getValue()).toEqual('b');
+        expect(rsNodeValue[0] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[0].getRoot().getValue()).toEqual('a');
+        expect(rsNodeValue[1] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[1].getRoot().getValue()).toEqual('b');
 
       });
 
@@ -171,7 +173,7 @@ describe('RsTree', function () {
         alternative.setLeftChild(new AtomNode('a'));
         alternative.setRightChild(new AtomNode('b'));
 
-        var rsNode = new RsNode([atom, alternative]);
+        var rsNode = new RsNode([new ParsingTree(atom), new ParsingTree(alternative)]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -182,12 +184,15 @@ describe('RsTree', function () {
         var rsNodeValue = rsNode.getValue();
 
         expect(rsNodeValue.length).toEqual(3);
-        expect(rsNodeValue[0] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[0].getValue()).toEqual('x');
-        expect(rsNodeValue[1] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[1].getValue()).toEqual('a');
-        expect(rsNodeValue[2] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[2].getValue()).toEqual('b');
+        expect(rsNodeValue[0] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[0].getRoot().getValue()).toEqual('x');
+        expect(rsNodeValue[1] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[1].getRoot().getValue()).toEqual('a');
+        expect(rsNodeValue[2] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[2].getRoot().getValue()).toEqual('b');
 
       });
 
@@ -198,7 +203,7 @@ describe('RsTree', function () {
         alternative.setLeftChild(new AtomNode('a'));
         alternative.setRightChild(new AtomNode('b'));
 
-        var rsNode = new RsNode([atom1, alternative, atom2]);
+        var rsNode = new RsNode([new ParsingTree(atom1), new ParsingTree(alternative), new ParsingTree(atom2)]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -209,14 +214,18 @@ describe('RsTree', function () {
         var rsNodeValue = rsNode.getValue();
 
         expect(rsNodeValue.length).toEqual(4);
-        expect(rsNodeValue[0] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[0].getValue()).toEqual('x');
-        expect(rsNodeValue[1] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[1].getValue()).toEqual('a');
-        expect(rsNodeValue[2] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[2].getValue()).toEqual('b');
-        expect(rsNodeValue[3] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[3].getValue()).toEqual('y');
+        expect(rsNodeValue[0] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[0].getRoot().getValue()).toEqual('x');
+        expect(rsNodeValue[1] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[1].getRoot().getValue()).toEqual('a');
+        expect(rsNodeValue[2] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[2].getRoot().getValue()).toEqual('b');
+        expect(rsNodeValue[3] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[3].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[3].getRoot().getValue()).toEqual('y');
 
       });
 
@@ -227,7 +236,7 @@ describe('RsTree', function () {
         alternative.setLeftChild(new AtomNode('a'));
         alternative.setRightChild(new AtomNode('b'));
 
-        var rsNode = new RsNode([alternative, atom1, atom2]);
+        var rsNode = new RsNode([new ParsingTree(alternative), new ParsingTree(atom1), new ParsingTree(atom2)]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -238,14 +247,18 @@ describe('RsTree', function () {
         var rsNodeValue = rsNode.getValue();
 
         expect(rsNodeValue.length).toEqual(4);
-        expect(rsNodeValue[0] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[0].getValue()).toEqual('a');
-        expect(rsNodeValue[1] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[1].getValue()).toEqual('b');
-        expect(rsNodeValue[2] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[2].getValue()).toEqual('x');
-        expect(rsNodeValue[3] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[3].getValue()).toEqual('y');
+        expect(rsNodeValue[0] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[0].getRoot().getValue()).toEqual('a');
+        expect(rsNodeValue[1] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[1].getRoot().getValue()).toEqual('b');
+        expect(rsNodeValue[2] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[2].getRoot().getValue()).toEqual('x');
+        expect(rsNodeValue[3] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[3].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[3].getRoot().getValue()).toEqual('y');
 
       });
 
@@ -256,7 +269,7 @@ describe('RsTree', function () {
         alternative.setLeftChild(new AtomNode('a'));
         alternative.setRightChild(new AtomNode('b'));
 
-        var rsNode = new RsNode([atom1, atom2, alternative]);
+        var rsNode = new RsNode([new ParsingTree(atom1), new ParsingTree(atom2), new ParsingTree(alternative)]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -267,24 +280,28 @@ describe('RsTree', function () {
         var rsNodeValue = rsNode.getValue();
 
         expect(rsNodeValue.length).toEqual(4);
-        expect(rsNodeValue[0] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[0].getValue()).toEqual('x');
-        expect(rsNodeValue[1] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[1].getValue()).toEqual('y');
-        expect(rsNodeValue[2] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[2].getValue()).toEqual('a');
-        expect(rsNodeValue[3] instanceof AtomNode).toBe(true);
-        expect(rsNodeValue[3].getValue()).toEqual('b');
+        expect(rsNodeValue[0] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[0].getRoot().getValue()).toEqual('x');
+        expect(rsNodeValue[1] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[1].getRoot().getValue()).toEqual('y');
+        expect(rsNodeValue[2] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[2].getRoot().getValue()).toEqual('a');
+        expect(rsNodeValue[3] instanceof ParsingTree).toBe(true);
+        expect(rsNodeValue[3].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNodeValue[3].getRoot().getValue()).toEqual('b');
 
       });
 
-      it("should decompose a node with a single parsing tree (conjunction)", function () {
+      it("should decompose a node with [Conjunction]", function () {
         var root = new ConjunctionNode();
         root.setLeftChild(new AtomNode('a'));
         root.setRightChild(new AtomNode('b'));
-        var tree = new Tree(root);
+        var tree = new ParsingTree(root);
 
-        var rsNode = new RsNode([root]);
+        var rsNode = new RsNode([tree]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -295,16 +312,18 @@ describe('RsTree', function () {
         var rsNode1 = decompositionResult[0];
         var rsNode1Value = rsNode1.getValue();
 
-        expect(rsNode1Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[0].getValue()).toEqual('a');
+        expect(rsNode1Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[0].getRoot().getValue()).toEqual('a');
 
         expect(decompositionResult[1] instanceof RsNode).toBe(true);
 
         var rsNode2 = decompositionResult[1];
         var rsNode2Value = rsNode2.getValue();
 
-        expect(rsNode2Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[0].getValue()).toEqual('b');
+        expect(rsNode2Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[0].getRoot().getValue()).toEqual('b');
 
       });
 
@@ -313,9 +332,9 @@ describe('RsTree', function () {
         var root = new ConjunctionNode();
         root.setLeftChild(new AtomNode('a'));
         root.setRightChild(new AtomNode('b'));
-        var tree = new Tree(root);
+        var tree = new ParsingTree(root);
 
-        var rsNode = new RsNode([atom, root]);
+        var rsNode = new RsNode([new ParsingTree(atom), tree]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -327,10 +346,12 @@ describe('RsTree', function () {
         var rsNode1Value = rsNode1.getValue();
 
         expect(rsNode1Value.length).toEqual(2)
-        expect(rsNode1Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[0].getValue()).toEqual('x');
-        expect(rsNode1Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[1].getValue()).toEqual('a');
+        expect(rsNode1Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[0].getRoot().getValue()).toEqual('x');
+        expect(rsNode1Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[1].getRoot().getValue()).toEqual('a');
 
         expect(decompositionResult[1] instanceof RsNode).toBe(true);
 
@@ -338,10 +359,12 @@ describe('RsTree', function () {
         var rsNode2Value = rsNode2.getValue();
 
         expect(rsNode2Value.length).toEqual(2)
-        expect(rsNode2Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[0].getValue()).toEqual('x');
-        expect(rsNode2Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[1].getValue()).toEqual('b');
+        expect(rsNode2Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[0].getRoot().getValue()).toEqual('x');
+        expect(rsNode2Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[1].getRoot().getValue()).toEqual('b');
       });
 
       it("should decompose a node with [Atom, Conjunction, Atom]", function () {
@@ -350,9 +373,9 @@ describe('RsTree', function () {
         var root = new ConjunctionNode();
         root.setLeftChild(new AtomNode('a'));
         root.setRightChild(new AtomNode('b'));
-        var tree = new Tree(root);
+        var tree = new ParsingTree(root);
 
-        var rsNode = new RsNode([atom1, root, atom2]);
+        var rsNode = new RsNode([new ParsingTree(atom1), tree, new ParsingTree(atom2)]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -363,13 +386,15 @@ describe('RsTree', function () {
         var rsNode1 = decompositionResult[0];
         var rsNode1Value = rsNode1.getValue();
 
-        expect(rsNode1Value.length).toEqual(3)
-        expect(rsNode1Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[0].getValue()).toEqual('x');
-        expect(rsNode1Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[1].getValue()).toEqual('a');
-        expect(rsNode1Value[2] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[2].getValue()).toEqual('y');
+        expect(rsNode1Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[0].getRoot().getValue()).toEqual('x');
+        expect(rsNode1Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[1].getRoot().getValue()).toEqual('a');
+        expect(rsNode1Value[2] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[2].getRoot().getValue()).toEqual('y');
 
         expect(decompositionResult[1] instanceof RsNode).toBe(true);
 
@@ -377,12 +402,15 @@ describe('RsTree', function () {
         var rsNode2Value = rsNode2.getValue();
 
         expect(rsNode2Value.length).toEqual(3)
-        expect(rsNode2Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[0].getValue()).toEqual('x');
-        expect(rsNode2Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[1].getValue()).toEqual('b');
-        expect(rsNode2Value[2] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[2].getValue()).toEqual('y');
+        expect(rsNode2Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[0].getRoot().getValue()).toEqual('x');
+        expect(rsNode2Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[1].getRoot().getValue()).toEqual('b');
+        expect(rsNode2Value[2] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[2].getRoot().getValue()).toEqual('y');
       });
 
       it("should decompose a node with [Conjunction, Atom, Atom]", function () {
@@ -391,9 +419,9 @@ describe('RsTree', function () {
         var root = new ConjunctionNode();
         root.setLeftChild(new AtomNode('a'));
         root.setRightChild(new AtomNode('b'));
-        var tree = new Tree(root);
+        var tree = new ParsingTree(root);
 
-        var rsNode = new RsNode([root, atom1, atom2]);
+        var rsNode = new RsNode([tree, new ParsingTree(atom1), new ParsingTree(atom2)]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -404,13 +432,15 @@ describe('RsTree', function () {
         var rsNode1 = decompositionResult[0];
         var rsNode1Value = rsNode1.getValue();
 
-        expect(rsNode1Value.length).toEqual(3)
-        expect(rsNode1Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[0].getValue()).toEqual('a');
-        expect(rsNode1Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[1].getValue()).toEqual('x');
-        expect(rsNode1Value[2] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[2].getValue()).toEqual('y');
+        expect(rsNode1Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[0].getRoot().getValue()).toEqual('a');
+        expect(rsNode1Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[1].getRoot().getValue()).toEqual('x');
+        expect(rsNode1Value[2] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[2].getRoot().getValue()).toEqual('y');
 
         expect(decompositionResult[1] instanceof RsNode).toBe(true);
 
@@ -418,12 +448,15 @@ describe('RsTree', function () {
         var rsNode2Value = rsNode2.getValue();
 
         expect(rsNode2Value.length).toEqual(3)
-        expect(rsNode2Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[0].getValue()).toEqual('b');
-        expect(rsNode2Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[1].getValue()).toEqual('x');
-        expect(rsNode2Value[2] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[2].getValue()).toEqual('y');
+        expect(rsNode2Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[0].getRoot().getValue()).toEqual('b');
+        expect(rsNode2Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[1].getRoot().getValue()).toEqual('x');
+        expect(rsNode2Value[2] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[2].getRoot().getValue()).toEqual('y');
       });
 
       it("should decompose a node with [Atom, Atom, Conjunction]", function () {
@@ -432,9 +465,9 @@ describe('RsTree', function () {
         var root = new ConjunctionNode();
         root.setLeftChild(new AtomNode('a'));
         root.setRightChild(new AtomNode('b'));
-        var tree = new Tree(root);
+        var tree = new ParsingTree(root);
 
-        var rsNode = new RsNode([atom1, atom2, root]);
+        var rsNode = new RsNode([new ParsingTree(atom1), new ParsingTree(atom2), tree]);
 
         var decompositionResult = rsNode.decompose();
 
@@ -445,13 +478,15 @@ describe('RsTree', function () {
         var rsNode1 = decompositionResult[0];
         var rsNode1Value = rsNode1.getValue();
 
-        expect(rsNode1Value.length).toEqual(3)
-        expect(rsNode1Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[0].getValue()).toEqual('x');
-        expect(rsNode1Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[1].getValue()).toEqual('y');
-        expect(rsNode1Value[2] instanceof AtomNode).toBe(true);
-        expect(rsNode1Value[2].getValue()).toEqual('a');
+        expect(rsNode1Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[0].getRoot().getValue()).toEqual('x');
+        expect(rsNode1Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[1].getRoot().getValue()).toEqual('y');
+        expect(rsNode1Value[2] instanceof ParsingTree).toBe(true);
+        expect(rsNode1Value[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode1Value[2].getRoot().getValue()).toEqual('a');
 
         expect(decompositionResult[1] instanceof RsNode).toBe(true);
 
@@ -459,12 +494,15 @@ describe('RsTree', function () {
         var rsNode2Value = rsNode2.getValue();
 
         expect(rsNode2Value.length).toEqual(3)
-        expect(rsNode2Value[0] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[0].getValue()).toEqual('x');
-        expect(rsNode2Value[1] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[1].getValue()).toEqual('y');
-        expect(rsNode2Value[2] instanceof AtomNode).toBe(true);
-        expect(rsNode2Value[2].getValue()).toEqual('b');
+        expect(rsNode2Value[0] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[0].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[0].getRoot().getValue()).toEqual('x');
+        expect(rsNode2Value[1] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[1].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[1].getRoot().getValue()).toEqual('y');
+        expect(rsNode2Value[2] instanceof ParsingTree).toBe(true);
+        expect(rsNode2Value[2].getRoot() instanceof AtomNode).toBe(true);
+        expect(rsNode2Value[2].getRoot().getValue()).toEqual('b');
       });
 
     });
@@ -480,7 +518,6 @@ describe('RsTree', function () {
   });
 
   describe("createFromParsingTree", function () {
-
 
 
     it("should throw an error if no parsing tree has been supplied", function () {
@@ -504,7 +541,7 @@ describe('RsTree', function () {
     });
 
     it("should decompose an empty tree", function () {
-      var tree = new Tree();
+      var tree = new ParsingTree();
 
       expect(tree.getSize()).toEqual(0);
 
@@ -516,13 +553,14 @@ describe('RsTree', function () {
 
     it("should decompose a tree with a single node", function () {
       var root = new AtomNode('a');
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(1);
       var nodeValue = resultTree.getRoot().getValue();
       expect(nodeValue.length).toEqual(1);
-      expect(nodeValue[0] instanceof AtomNode).toBe(true);
+      expect(nodeValue[0] instanceof ParsingTree).toBe(true);
+      expect(nodeValue[0]).toBe(tree);
 
     });
 
@@ -530,18 +568,19 @@ describe('RsTree', function () {
       var root = new AlternativeNode();
       root.setLeftChild(new AtomNode('a'));
       root.setRightChild(new AtomNode('b'));
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(2);
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
-      expect(rootValue[0] instanceof AlternativeNode).toBe(true);
+      expect(rootValue[0] instanceof ParsingTree).toBe(true);
+      expect(rootValue[0]).toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
-      expect(leftChildValue[0].getValue()).toEqual('a');
-      expect(leftChildValue[1].getValue()).toEqual('b');
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(leftChildValue[1].getRoot().getValue()).toEqual('b');
 
       expect(resultTree.getRoot().hasRightChild()).toBe(false);
 
@@ -555,24 +594,25 @@ describe('RsTree', function () {
       alternative2.setLeftChild(new AtomNode('b'));
       alternative2.setRightChild(new AtomNode('c'));
 
-      var tree = new Tree(alternative1);
+      var tree = new ParsingTree(alternative1);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(3);
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
-      expect(rootValue[0] instanceof AlternativeNode).toBe(true);
+      expect(rootValue[0] instanceof ParsingTree).toBe(true);
+      expect(rootValue[0]).toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
-      expect(leftChildValue[0].getValue()).toEqual('a');
-      expect(leftChildValue[1] instanceof AlternativeNode).toBe(true);
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(leftChildValue[1].getRoot() instanceof AlternativeNode).toBe(true);
 
       leftChildValue = resultTree.getRoot().getLeftChild().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(3);
-      expect(leftChildValue[0].getValue()).toEqual('a');
-      expect(leftChildValue[1].getValue()).toEqual('b');
-      expect(leftChildValue[2].getValue()).toEqual('c');
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(leftChildValue[1].getRoot().getValue()).toEqual('b');
+      expect(leftChildValue[2].getRoot().getValue()).toEqual('c');
 
       expect(resultTree.getRoot().hasRightChild()).toBe(false);
       expect(resultTree.getRoot().getLeftChild().hasRightChild()).toBe(false);
@@ -583,21 +623,22 @@ describe('RsTree', function () {
       var root = new ConjunctionNode();
       root.setLeftChild(new AtomNode('a'));
       root.setRightChild(new AtomNode('b'));
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(3);
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
-      expect(rootValue[0] instanceof ConjunctionNode).toBe(true);
+      expect(rootValue[0] instanceof ParsingTree).toBe(true);
+      expect(rootValue[0]).toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(1);
-      expect(leftChildValue[0].getValue()).toEqual('a');
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
 
       var rightChildValue = resultTree.getRoot().getRightChild().getValue();
       expect(rightChildValue.length).toEqual(1);
-      expect(rightChildValue[0].getValue()).toEqual('b');
+      expect(rightChildValue[0].getRoot().getValue()).toEqual('b');
 
 
     });
@@ -606,19 +647,20 @@ describe('RsTree', function () {
       var implication = new ImplicationNode();
       implication.setLeftChild(new AtomNode('a'));
       implication.setRightChild(new AtomNode('b'));
-      var tree = new Tree(implication);
+      var tree = new ParsingTree(implication);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(2);
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
-      expect(rootValue[0] instanceof ImplicationNode).toBe(true);
+      expect(rootValue[0] instanceof ParsingTree).toBe(true);
+      expect(rootValue[0]).toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
-      expect(leftChildValue[0].getValue()).toEqual('a');
-      expect(leftChildValue[0].isNegated()).toBe(true);
-      expect(leftChildValue[1].getValue()).toEqual('b');
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(leftChildValue[0].getRoot().isNegated()).toBe(true);
+      expect(leftChildValue[1].getRoot().getValue()).toEqual('b');
 
       expect(resultTree.getRoot().hasRightChild()).toBe(false)
 
@@ -632,32 +674,36 @@ describe('RsTree', function () {
       conjunction2.setLeftChild(new AtomNode('b'));
       conjunction2.setRightChild(new AtomNode('c'));
 
-      var tree = new Tree(conjunction1);
+      var tree = new ParsingTree(conjunction1);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(5);
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
-      expect(rootValue[0] instanceof ConjunctionNode).toBe(true);
+      expect(rootValue[0] instanceof ParsingTree).toBe(true);
+      expect(rootValue[0]).toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(1);
-      expect(leftChildValue[0] instanceof AtomNode).toBe(true);
-      expect(leftChildValue[0].getValue()).toEqual('a');
+      expect(leftChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
 
       var rightChildValue = resultTree.getRoot().getRightChild().getValue();
       expect(rightChildValue.length).toEqual(1);
-      expect(rightChildValue[0] instanceof ConjunctionNode).toBe(true);
+      expect(rightChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(rightChildValue[0].getRoot() instanceof ConjunctionNode).toBe(true);
 
       leftChildValue = resultTree.getRoot().getRightChild().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(1);
-      expect(leftChildValue[0] instanceof AtomNode).toBe(true);
-      expect(leftChildValue[0].getValue()).toEqual('b');
+      expect(leftChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(leftChildValue[0].getRoot() instanceof AtomNode).toBe(true);
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('b');
 
       rightChildValue = resultTree.getRoot().getRightChild().getRightChild().getValue();
       expect(rightChildValue.length).toEqual(1);
-      expect(rightChildValue[0] instanceof AtomNode).toBe(true);
-      expect(rightChildValue[0].getValue()).toEqual('c');
+      expect(rightChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(rightChildValue[0].getRoot() instanceof AtomNode).toBe(true);
+      expect(rightChildValue[0].getRoot().getValue()).toEqual('c');
 
 
     });
@@ -670,42 +716,49 @@ describe('RsTree', function () {
       conjunction.setLeftChild(new AtomNode('b'));
       conjunction.setRightChild(new AtomNode('c'));
 
-      var tree = new Tree(alternative);
+      var tree = new ParsingTree(alternative);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.getSize()).toEqual(4);
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
-      expect(rootValue[0] instanceof AlternativeNode).toBe(true);
+      expect(rootValue[0] instanceof ParsingTree).toBe(true);
+      expect(rootValue[0].getRoot() instanceof AlternativeNode).toBe(true);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
-      expect(leftChildValue[0] instanceof AtomNode).toBe(true);
-      expect(leftChildValue[0].getValue()).toEqual('a');
-      expect(leftChildValue[1] instanceof ConjunctionNode).toBe(true);
+      expect(leftChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(leftChildValue[0].getRoot() instanceof AtomNode).toBe(true);
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(leftChildValue[1] instanceof ParsingTree).toBe(true);
+      expect(leftChildValue[1].getRoot() instanceof ConjunctionNode).toBe(true);
 
       expect(resultTree.getRoot().hasRightChild()).toBe(false);
 
       leftChildValue = resultTree.getRoot().getLeftChild().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
-      expect(leftChildValue[0] instanceof AtomNode).toBe(true);
-      expect(leftChildValue[0].getValue()).toEqual('a');
-      expect(leftChildValue[1] instanceof AtomNode).toBe(true);
-      expect(leftChildValue[1].getValue()).toEqual('b');
+      expect(leftChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(leftChildValue[0].getRoot() instanceof AtomNode).toBe(true);
+      expect(leftChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(leftChildValue[1] instanceof ParsingTree).toBe(true);
+      expect(leftChildValue[1].getRoot() instanceof AtomNode).toBe(true);
+      expect(leftChildValue[1].getRoot().getValue()).toEqual('b');
 
       var rightChildValue = resultTree.getRoot().getLeftChild().getRightChild().getValue();
       expect(rightChildValue.length).toEqual(2);
-      expect(rightChildValue[0] instanceof AtomNode).toBe(true);
-      expect(rightChildValue[0].getValue()).toEqual('a');
-      expect(rightChildValue[1] instanceof AtomNode).toBe(true);
-      expect(rightChildValue[1].getValue()).toEqual('c');
+      expect(rightChildValue[0] instanceof ParsingTree).toBe(true);
+      expect(rightChildValue[0].getRoot() instanceof AtomNode).toBe(true);
+      expect(rightChildValue[0].getRoot().getValue()).toEqual('a');
+      expect(rightChildValue[1] instanceof ParsingTree).toBe(true);
+      expect(rightChildValue[1].getRoot() instanceof AtomNode).toBe(true);
+      expect(rightChildValue[1].getRoot().getValue()).toEqual('c');
     });
 
   });
 
   describe("isProof", function () {
     it("empty tree is not a proof", function () {
-      var tree = new Tree();
+      var tree = new ParsingTree();
 
       var resultTree = createFromParsingTree(tree);
 
@@ -715,7 +768,7 @@ describe('RsTree', function () {
 
     it("tree with single formula is not a proof", function () {
       var root = new AtomNode('a');
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.isProof()).toBe(false);
@@ -726,7 +779,7 @@ describe('RsTree', function () {
       var root = new AlternativeNode();
       root.setLeftChild(new AtomNode('a'));
       root.setRightChild(new AtomNode('a', true));
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.isProof()).toBe(true);
@@ -737,7 +790,7 @@ describe('RsTree', function () {
       var root = new AlternativeNode();
       root.setLeftChild(new AtomNode('a'));
       root.setRightChild(new AtomNode('a'));
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.isProof()).toBe(false);
@@ -748,7 +801,7 @@ describe('RsTree', function () {
 
   describe("isSatisfiable", function () {
     it("empty tree is not satisfiable", function () {
-      var tree = new Tree();
+      var tree = new ParsingTree();
 
       var resultTree = createFromParsingTree(tree);
 
@@ -757,7 +810,7 @@ describe('RsTree', function () {
 
     it("a single formula is satisfiable", function () {
       var root = new AtomNode('a');
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
 
       var resultTree = createFromParsingTree(tree);
 
@@ -768,7 +821,7 @@ describe('RsTree', function () {
       var root = new AlternativeNode();
       root.setLeftChild(new AtomNode('a'));
       root.setRightChild(new AtomNode('a'));
-      var tree = new Tree(root);
+      var tree = new ParsingTree(root);
       var resultTree = createFromParsingTree(tree);
 
       expect(resultTree.isSatisfiable()).toBe(true);

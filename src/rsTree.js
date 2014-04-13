@@ -23,61 +23,66 @@ function RsNode(value){
 
   };
 
-  function isFormulaDecomposable(formula){
-    return !(formula instanceof AtomNode);
+  function isFormulaDecomposable(formulaTree){
+    if (!formulaTree.hasRoot()) {
+      return false;
+    }
+
+    return !(formulaTree.getRoot() instanceof AtomNode);
   }
 
   this.decompose = function () {
     var formulas = this.getValue();
-    var formulaToDecompose;
+    var formulaTreeToDecompose;
     for (var indexOfFormula = 0, len = formulas.length; indexOfFormula < len; indexOfFormula++){
       if (isFormulaDecomposable(formulas[indexOfFormula])){
-        formulaToDecompose = formulas[indexOfFormula];
+        formulaTreeToDecompose = formulas[indexOfFormula];
         break;
       }
     }
 
-    if (_.isUndefined(formulaToDecompose)){
+    if (_.isUndefined(formulaTreeToDecompose)){
       throw new Error('No decomposable formula has been found');
     }
 
+    var formulaRoot = formulaTreeToDecompose.getRoot();
     var previousFormulas = formulas.slice(0, indexOfFormula);
     var nextFormulas = formulas.slice(indexOfFormula + 1);
 
-    var leftChild;
-    var rightChild;
+    var leftSubtree;
+    var rightSubtree;
 
-    if (formulaToDecompose instanceof parsingTree.AlternativeNode){
+    if (formulaRoot instanceof parsingTree.AlternativeNode){
 
-      leftChild = previousFormulas
-        .concat([formulaToDecompose.getLeftChild(), formulaToDecompose.getRightChild()])
+      leftSubtree = previousFormulas
+        .concat([formulaRoot.getLeftSubtree(), formulaRoot.getRightSubtree()])
         .concat(nextFormulas);
 
-      return [new RsNode(leftChild)];
+      return [new RsNode(leftSubtree)];
     }
 
-    if (formulaToDecompose instanceof parsingTree.ConjunctionNode){
-      leftChild = previousFormulas
-        .concat([formulaToDecompose.getLeftChild()])
+    if (formulaRoot instanceof parsingTree.ConjunctionNode){
+      leftSubtree = previousFormulas
+        .concat([formulaRoot.getLeftSubtree()])
         .concat(nextFormulas);
 
-      rightChild = previousFormulas
-        .concat([formulaToDecompose.getRightChild()])
+      rightSubtree = previousFormulas
+        .concat([formulaRoot.getRightSubtree()])
         .concat(nextFormulas);
 
-      return [new RsNode(leftChild), new RsNode(rightChild)];
+      return [new RsNode(leftSubtree), new RsNode(rightSubtree)];
     }
 
-    if (formulaToDecompose instanceof parsingTree.ImplicationNode){
+    if (formulaRoot instanceof parsingTree.ImplicationNode){
 
-      var leftSubtree = formulaToDecompose.getLeftSubtree();
-      leftSubtree.negate();
+      var tmpLeftSubtree = formulaRoot.getLeftSubtree();
+      tmpLeftSubtree.negate();
 
-      leftChild = previousFormulas
-        .concat([leftSubtree.getRoot(), formulaToDecompose.getRightChild()])
+      leftSubtree = previousFormulas
+        .concat([tmpLeftSubtree, formulaRoot.getRightSubtree()])
         .concat(nextFormulas);
 
-      return [new RsNode(leftChild)];
+      return [new RsNode(leftSubtree)];
     }
 
   };
@@ -87,13 +92,13 @@ function RsNode(value){
 RsNode.prototype = new tree.Node();
 
 RsNode.prototype.isFundamental = function () {
-  var formulas = this.getValue();
+  var formulaTries = this.getValue();
 
-  for (var i = 0, len = formulas.length; i < len; i++){
-    var formula = formulas[i];
+  for (var i = 0, len = formulaTries.length; i < len; i++){
+    var formula = formulaTries[i].getRoot();
 
     for (var j = i; j < len; j++){
-      if (formula.getValue() == formulas[j].getValue() && formula.isNegated() != formulas[j].isNegated()){
+      if (formula.getValue() == formulaTries[j].getRoot().getValue() && formula.isNegated() != formulaTries[j].getRoot().isNegated()){
         return true;
       }
     }
@@ -145,7 +150,7 @@ RsTree.prototype.isSatisfiable = function () {
     return true;
   }
 
-  var rootValue = this.getRoot().getValue()[0];
+  var rootValue = this.getRoot().getValue()[0].getRoot();
   var parsingTree = new ParsingTree(rootValue);
   parsingTree.negate();
   var rsTree = createFromParsingTree(parsingTree);
@@ -169,7 +174,7 @@ RsTree.prototype.toString = function () {
 
 function createFromParsingTree(parsingTree){
 
-  if (!parsingTree || !(parsingTree instanceof tree.Tree)){
+  if (!parsingTree || !(parsingTree instanceof ParsingTree)){
     throw new Error('No parsing tree supplied');
   }
 
@@ -177,7 +182,7 @@ function createFromParsingTree(parsingTree){
     return new RsTree();
   }
 
-  var rsTree = new RsTree(parsingTree.getRoot());
+  var rsTree = new RsTree(parsingTree);
 
   return decompose(rsTree);
 
