@@ -14,8 +14,12 @@ angular.module('rs-proof')
       }
 
       var parser = new Parser();
-      var parsingTree = parser.parse($scope.formula);
-      $scope.rsTree = createFromParsingTree(parsingTree);
+      try {
+        var parsingTree = parser.parse($scope.formula);
+        $scope.rsTree = createFromParsingTree(parsingTree);
+      } catch (e) {
+        alert('Parsing error');
+      }
     };
 
     $scope.$watch('rsTree', function (tree) {
