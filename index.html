@@ -4,84 +4,7 @@
     <meta charset="UTF-8">
     <title>RS Proof</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
-    <style>
-
-        body, html {
-            height: 100%;
-        }
-
-        .tab-pane {
-            background: #fdfdfd;
-            padding: 5px;
-            height: 100%;
-            border-radius: 3px;
-        }
-
-        g.node {
-            font-family: "Courier New";
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        circle.node-dot {
-            fill: #b9ff76;
-            stroke: #62b545;
-            stroke-width: 2px;
-        }
-
-        circle.node-dot.leave {
-            fill: red;
-            stroke: darkred;
-        }
-
-        path.link {
-            fill: none;
-            stroke: lightgray;
-        }
-
-        header form.form-inline .formula-input {
-            width: 80%;
-        }
-
-        .navbar-header {
-            font-family: Georgia, serif;
-            margin-top: 15px;
-        }
-
-        .navbar-header .glyphicon {
-            font-size: 19px;
-            position: relative;
-            top: -2px;
-        }
-
-        .checkResult {
-            padding: 40px 20px;
-            margin-bottom: 20px;
-        }
-
-        .checkResult h1{
-            margin: 0;
-            color: #fdfdfd;
-        }
-
-        .checkResult h1 .glyphicon{
-            font-size: 0.8em;
-        }
-
-        .checkResult.valid{
-            background-color: #4dbf4d;
-        }
-
-        .checkResult.satisfiable {
-            background-color: #2bc1e6;
-        }
-
-        .checkResult.not-satisfiable {
-            background-color: #d9534f;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="src/ui/main.css"/>
 </head>
 <body ng-app="rs-proof" ng-controller="MainCtrl">
 
@@ -115,7 +38,7 @@
     </h1>
 </section>
 
-<div class="col-xs-12" ng-show="isProof === false && isSatisfiable === true">
+<section class="col-xs-12" ng-show="isProof === false && isSatisfiable === true">
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <div class="panel panel-default">
@@ -146,16 +69,16 @@
     </div>
 
 
-</div>
+</section>
 
-<div class="col-xs-12" ng-show="rsTree">
+<section class="col-xs-12" ng-show="rsTree">
     <div class="panel panel-default">
         <div class="panel-heading">Decomposition tree</div>
         <div class="panel-body">
             <div tree tree-data="rsTree"></div>
         </div>
     </div>
-</div>
+</section>
 
 
 
