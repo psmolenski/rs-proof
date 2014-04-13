@@ -1,8 +1,8 @@
 angular.module('rs-proof')
   .controller('MainCtrl', function ($scope, SamplesModal) {
 
-    var Parser = require('../src/parser/parser').Parser;
-    var createFromParsingTree = require('../src/rsTree').createFromParsingTree;
+    var Parser = require('../parser/parser').Parser;
+    var createFromParsingTree = require('../rsTree').createFromParsingTree;
 
     $scope.formula = null;
     $scope.rsTree = null;

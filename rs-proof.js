@@ -8107,8 +8107,8 @@ require('./samplesModal');
 angular.module('rs-proof')
   .controller('MainCtrl', function ($scope, SamplesModal) {
 
-    var Parser = require('../src/parser/parser').Parser;
-    var createFromParsingTree = require('../src/rsTree').createFromParsingTree;
+    var Parser = require('../parser/parser').Parser;
+    var createFromParsingTree = require('../rsTree').createFromParsingTree;
 
     $scope.formula = null;
     $scope.rsTree = null;
@@ -8164,7 +8164,7 @@ angular.module('rs-proof')
 
 
   });
-},{"../src/parser/parser":3,"../src/rsTree":5}],9:[function(require,module,exports){
+},{"../parser/parser":3,"../rsTree":5}],9:[function(require,module,exports){
 angular.module('rs-proof')
   .service('SamplesModal', function ($modal) {
 
