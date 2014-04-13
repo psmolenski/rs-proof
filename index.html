@@ -91,9 +91,9 @@
     </div>
     <div class="col-xs-12 col-md-10 text-center">
         <form class="form-inline navbar-form" ng-submit="testFormula()">
-            <input type="text" class="form-control input-lg formula-input" ng-model="formula"/>
+            <input type="text" class="form-control input-lg formula-input" ng-model="formula" placeholder="formula to check"/>
             <button type="submit" class="btn btn-primary btn-lg" ng-disabled="!formula">Check</button>
-            <button class="btn btn-link navbar-btn navbar-right">Samples</button>
+            <button type="button" class="btn btn-link navbar-btn navbar-right" ng-click="showSamples()">Samples</button>
 
         </form>
     </div>
@@ -162,9 +162,26 @@
 <!--<script type="text/javascript" src="browser.js"></script>-->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="rs-proof.js"></script>
+
+<script type="text/ng-template" id="rs-proof.SamplesModal">
+
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Sample valid formulas</h4>
+    </div>
+    <div class="modal-body">
+        <ul class="list-unstyled">
+            <li ng-repeat="formula in formulas">
+                <button class="btn btn-link" ng-bind="formula" ng-click="$close(formula)"></button>
+            </li>
+        </ul>
+    </div>
+
+</script>
 
 </body>
 </html>

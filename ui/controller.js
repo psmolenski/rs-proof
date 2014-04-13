@@ -1,10 +1,10 @@
 angular.module('rs-proof')
-  .controller('MainCtrl', function ($scope) {
+  .controller('MainCtrl', function ($scope, SamplesModal) {
 
     var Parser = require('../src/parser/parser').Parser;
     var createFromParsingTree = require('../src/rsTree').createFromParsingTree;
 
-    $scope.formula = 'a + b';
+    $scope.formula = null;
     $scope.rsTree = null;
 
     $scope.testFormula = function () {
@@ -45,6 +45,15 @@ angular.module('rs-proof')
       }
 
 
+    };
+
+    $scope.showSamples = function () {
+      SamplesModal.open().result.then(function (sampleFormula) {
+        if (sampleFormula){
+          $scope.formula = sampleFormula;
+          $scope.testFormula();
+        }
+      });
     };
 
 

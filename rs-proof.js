@@ -8099,20 +8099,26 @@ module.exports = {
   Node: Node
 };
 },{}],7:[function(require,module,exports){
-angular.module('rs-proof', []);
+angular.module('rs-proof', ['ui.bootstrap']);
 require('./controller');
 require('./treeDirective');
-},{"./controller":8,"./treeDirective":9}],8:[function(require,module,exports){
+require('./samplesModal');
+},{"./controller":8,"./samplesModal":9,"./treeDirective":10}],8:[function(require,module,exports){
 angular.module('rs-proof')
-  .controller('MainCtrl', function ($scope) {
+  .controller('MainCtrl', function ($scope, SamplesModal) {
 
     var Parser = require('../src/parser/parser').Parser;
     var createFromParsingTree = require('../src/rsTree').createFromParsingTree;
 
-    $scope.formula = 'a + b';
+    $scope.formula = null;
     $scope.rsTree = null;
 
     $scope.testFormula = function () {
+
+      if (!$scope.formula){
+        return;
+      }
+
       var parser = new Parser();
       var parsingTree = parser.parse($scope.formula);
       $scope.rsTree = createFromParsingTree(parsingTree);
@@ -8147,9 +8153,62 @@ angular.module('rs-proof')
 
     };
 
+    $scope.showSamples = function () {
+      SamplesModal.open().result.then(function (sampleFormula) {
+        if (sampleFormula){
+          $scope.formula = sampleFormula;
+          $scope.testFormula();
+        }
+      });
+    };
+
 
   });
 },{"../src/parser/parser":3,"../src/rsTree":5}],9:[function(require,module,exports){
+angular.module('rs-proof')
+  .service('SamplesModal', function ($modal) {
+
+    var formulas = ['p + !p',
+      '!(p * !p)',
+      'p => p',
+      '(p => !p) => !p',
+      '(!p => p) => p',
+      'p => (q => p)',
+      '!p => (p => q)',
+      '(p * q) => p',
+      'p => (p+q)',
+      '(p => (q*!q)) => !p',
+      '((p => q) * (q => r)) => (p => r)',
+      '(p => (q => r)) => (q => (p => r))',
+      '(p => (q => r)) => ((p * q) => r)',
+      '((p => r) * (q => r)) => ((p + q) => r)',
+      '((p => r) * (q => s)) => ((p + q) => (r + s))',
+      '((p => r) * (q => s))=>((p * q) => (r * s))',
+      '(p => (q * r)) => ((p => q) * (p => r))',
+      '(p => !q) => (q => !p)'];
+
+    function SamplesModalCtrl($scope, $modalInstance, formulas) {
+      $scope.formulas = formulas;
+    }
+
+
+    var options = {
+      templateUrl: 'rs-proof.SamplesModal',
+      controller: SamplesModalCtrl,
+      resolve: {
+        formulas: function () {
+          return formulas;
+        }
+      }
+    };
+
+     return {
+       open: function () {
+         return $modal.open(options);
+       }
+     }
+  });
+},{}],10:[function(require,module,exports){
 angular.module('rs-proof')
   .directive('tree', function ($timeout) {
      return {
