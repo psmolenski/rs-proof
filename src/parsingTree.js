@@ -60,7 +60,7 @@ function ParsingTree(root){
 
 }
 
-ParsingTree.prototype = new Tree();
+ParsingTree.prototype = _.create(Tree.prototype, {constructor: ParsingTree});
 
 ParsingTree.prototype.toString = function () {
 
@@ -86,7 +86,7 @@ function FormulaNode(value) {
   }
 }
 
-FormulaNode.prototype = new Node();
+FormulaNode.prototype = _.create(Node.prototype, {constructor: FormulaNode});
 
 function AtomNode(value, negated) {
   FormulaNode.call(this, value);
@@ -99,10 +99,23 @@ function AtomNode(value, negated) {
 
   this.negate = function () {
     _negated = !_negated;
-  }
+  };
+
+  var originalCopy = this.copy;
+
+  this.copy = function () {
+    var nodeCopy = originalCopy.call(this);
+
+    if (this.isNegated()){
+      nodeCopy.negate();
+    }
+
+    return nodeCopy;
+
+  };
 }
 
-AtomNode.prototype = new FormulaNode();
+AtomNode.prototype = _.create(FormulaNode.prototype, {constructor: AtomNode});
 
 AtomNode.prototype.toString = function () {
 
@@ -115,7 +128,7 @@ function ConjunctionNode(value) {
   FormulaNode.call(this, value);
 }
 
-ConjunctionNode.prototype = new FormulaNode();
+ConjunctionNode.prototype = _.create(FormulaNode.prototype, {constructor: ConjunctionNode});
 
 ConjunctionNode.prototype.toString = function () {
   return this.getLeftSubtree().toString() + ' * ' + this.getRightSubtree().toString();
@@ -125,7 +138,7 @@ function AlternativeNode(value) {
   FormulaNode.call(this, value);
 }
 
-AlternativeNode.prototype = new FormulaNode();
+AlternativeNode.prototype = _.create(FormulaNode.prototype, {constructor: AlternativeNode});
 
 AlternativeNode.prototype.toString = function () {
   return this.getLeftSubtree().toString() + ' + ' + this.getRightSubtree().toString();
@@ -135,7 +148,7 @@ function ImplicationNode(value) {
   FormulaNode.call(this, value);
 }
 
-ImplicationNode.prototype = new FormulaNode();
+ImplicationNode.prototype = _.create(FormulaNode.prototype, {constructor: ImplicationNode});
 
 ImplicationNode.prototype.toString = function () {
   return this.getLeftSubtree().toString() + ' => ' + this.getRightSubtree().toString();

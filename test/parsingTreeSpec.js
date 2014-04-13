@@ -1,10 +1,27 @@
 describe('ParsingTree', function () {
 
   var ParsingTree = require('../src/parsingTree.js').ParsingTree;
+  var FormulaNode = require('../src/parsingTree.js').FormulaNode;
   var AtomNode = require('../src/parsingTree.js').AtomNode;
   var AlternativeNode = require('../src/parsingTree.js').AlternativeNode;
   var ConjunctionNode = require('../src/parsingTree.js').ConjunctionNode;
   var ImplicationNode = require('../src/parsingTree.js').ImplicationNode;
+
+
+  describe("FormulaNode", function () {
+    describe("copy", function () {
+      it("should copy an empty node", function () {
+        var node = new FormulaNode();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof FormulaNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+      });
+    });
+  });
 
   describe("AtomNode", function () {
     describe("constructor", function () {
@@ -57,6 +74,90 @@ describe('ParsingTree', function () {
         node.negate();
 
         expect(node.isNegated()).toBe(true);
+      });
+    });
+
+    describe("copy", function () {
+      it("should copy an empty node", function () {
+        var node = new AtomNode();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof AtomNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+        expect(nodeCopy.isNegated()).toEqual(node.isNegated())
+      });
+
+      it("should copy a node with value", function () {
+        var node = new AtomNode('a');
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof AtomNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+        expect(nodeCopy.isNegated()).toEqual(node.isNegated());
+      });
+
+      it("should copy a node with negation", function () {
+        var node = new AtomNode('a');
+        node.negate();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof AtomNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+        expect(nodeCopy.isNegated()).toEqual(node.isNegated());
+      });
+    });
+  });
+
+  describe("ConjunctionNode", function () {
+    describe("copy", function () {
+      it("should copy an empty node", function () {
+        var node = new ConjunctionNode();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof ConjunctionNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+      });
+    });
+  });
+
+  describe("AlternativeNode", function () {
+    describe("copy", function () {
+      it("should copy an empty node", function () {
+        var node = new AlternativeNode();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof AlternativeNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+      });
+    });
+  });
+
+  describe("ImplicationNode", function () {
+    describe("copy", function () {
+      it("should copy an empty node", function () {
+        var node = new ImplicationNode();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof ImplicationNode).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
       });
     });
   });
@@ -205,6 +306,18 @@ describe('ParsingTree', function () {
         expect(tree.getRoot().getRightChild() instanceof ConjunctionNode).toBe(true);
         expect(tree.getRoot().getRightChild().getLeftChild().isNegated()).toBe(false);
         expect(tree.getRoot().getRightChild().getRightChild().isNegated()).toBe(true);
+      });
+
+    });
+
+    describe('copy', function(){
+      it("should copy an empty tree", function () {
+        var tree = new ParsingTree();
+        var treeCopy = tree.copy();
+
+        expect(treeCopy instanceof ParsingTree).toBe(true);
+
+        expect(treeCopy).not.toBe(tree);
       });
 
     });

@@ -560,7 +560,7 @@ describe('RsTree', function () {
       var nodeValue = resultTree.getRoot().getValue();
       expect(nodeValue.length).toEqual(1);
       expect(nodeValue[0] instanceof ParsingTree).toBe(true);
-      expect(nodeValue[0]).toBe(tree);
+      expect(nodeValue[0]).not.toBe(tree);
 
     });
 
@@ -575,7 +575,7 @@ describe('RsTree', function () {
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
       expect(rootValue[0] instanceof ParsingTree).toBe(true);
-      expect(rootValue[0]).toBe(tree);
+      expect(rootValue[0]).not.toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
@@ -601,7 +601,7 @@ describe('RsTree', function () {
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
       expect(rootValue[0] instanceof ParsingTree).toBe(true);
-      expect(rootValue[0]).toBe(tree);
+      expect(rootValue[0]).not.toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
@@ -630,7 +630,7 @@ describe('RsTree', function () {
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
       expect(rootValue[0] instanceof ParsingTree).toBe(true);
-      expect(rootValue[0]).toBe(tree);
+      expect(rootValue[0]).not.toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(1);
@@ -654,7 +654,7 @@ describe('RsTree', function () {
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
       expect(rootValue[0] instanceof ParsingTree).toBe(true);
-      expect(rootValue[0]).toBe(tree);
+      expect(rootValue[0]).not.toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(2);
@@ -681,7 +681,7 @@ describe('RsTree', function () {
       var rootValue = resultTree.getRoot().getValue();
       expect(rootValue.length).toEqual(1);
       expect(rootValue[0] instanceof ParsingTree).toBe(true);
-      expect(rootValue[0]).toBe(tree);
+      expect(rootValue[0]).not.toBe(tree);
 
       var leftChildValue = resultTree.getRoot().getLeftChild().getValue();
       expect(leftChildValue.length).toEqual(1);

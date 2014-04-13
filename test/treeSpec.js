@@ -92,6 +92,65 @@ describe('tree', function () {
       });
 
     });
+
+    describe("copy", function () {
+      it("should copy an empty tree", function () {
+        var tree = new Tree();
+        var treeCopy = tree.copy();
+
+        expect(treeCopy instanceof Tree).toBe(true);
+        expect(treeCopy).not.toBe(tree);
+        expect(treeCopy.hasRoot()).toBe(false);
+
+      });
+
+      it("should copy a tree with a root", function () {
+        var root = new Node('foo');
+        var tree = new Tree();
+        tree.setRoot(root);
+        var treeCopy = tree.copy();
+
+        expect(treeCopy instanceof Tree).toBe(true);
+        expect(treeCopy.getSize()).toEqual(1);
+        expect(treeCopy).not.toBe(tree);
+        expect(treeCopy.getRoot()).not.toBe(root);
+        expect(treeCopy.getRoot().getValue()).toEqual(root.getValue());
+
+      });
+
+      it("should copy a tree with a root", function () {
+        var root = new Node('foo');
+        var nodeLeft = new Node('bar');
+        var nodeRight = new Node('bazz');
+        root.setLeftChild(nodeLeft);
+        root.setRightChild(nodeRight);
+        var tree = new Tree();
+        tree.setRoot(root);
+        var treeCopy = tree.copy();
+
+        expect(treeCopy instanceof Tree).toBe(true);
+        expect(treeCopy.getSize()).toEqual(3);
+        expect(treeCopy).not.toBe(tree);
+        
+        var rootCopy = treeCopy.getRoot();
+        
+        expect(rootCopy).not.toBe(root);
+        expect(rootCopy.getValue()).toEqual(root.getValue());
+        
+        var nodeLeftCopy = rootCopy.getLeftChild();
+        
+        expect(nodeLeftCopy).not.toBe(nodeLeft);
+        expect(nodeLeftCopy.getValue()).toEqual(nodeLeft.getValue());
+
+
+        var nodeRightCopy = rootCopy.getRightChild();
+
+        expect(nodeRightCopy).not.toBe(nodeRight);
+        expect(nodeRightCopy.getValue()).toEqual(nodeRight.getValue());
+
+      });
+
+    });
   });
 
   describe("Node", function () {
@@ -111,6 +170,92 @@ describe('tree', function () {
         expect(node.getLeftChild()).toBeNull();
         expect(node.getRightChild()).toBeNull();
 
+      });
+    });
+    describe("copy", function () {
+      it("should copy an empty node", function () {
+        var node = new Node();
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof Node).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+      });
+
+      it("should copy a node with a value", function () {
+        var node = new Node('foo');
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof Node).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toEqual(node.getValue());
+      });
+
+      it("should copy a node with a value which is a reference", function () {
+        var obj = {};
+        var node = new Node(obj);
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof Node).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getValue()).toBe(node.getValue());
+      });
+
+      it("should copy a node together with its children", function () {
+        var node = new Node('foo');
+        var nodeLeft = new Node('bar');
+        var nodeRight = new Node('bazz');
+        node.setLeftChild(nodeLeft);
+        node.setRightChild(nodeRight);
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof Node).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getLeftChild()).not.toBe(nodeLeft);
+        expect(nodeCopy.getLeftChild().getValue()).toEqual(nodeLeft.getValue());
+
+        expect(nodeCopy.getRightChild()).not.toBe(nodeRight);
+        expect(nodeCopy.getRightChild().getValue()).toEqual(nodeRight.getValue());
+      });
+
+      it("should copy a node together with its children (left child only)", function () {
+        var node = new Node('foo');
+        var nodeLeft = new Node('bar');
+        node.setLeftChild(nodeLeft);
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof Node).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.getLeftChild()).not.toBe(nodeLeft);
+        expect(nodeCopy.getLeftChild().getValue()).toEqual(nodeLeft.getValue());
+
+        expect(nodeCopy.hasRightChild()).toBe(false);
+      });
+
+      it("should copy a node together with its children (right child only)", function () {
+        var node = new Node('foo');
+        var nodeRight = new Node('bazz');
+        node.setRightChild(nodeRight);
+        var nodeCopy = node.copy();
+
+        expect(nodeCopy instanceof Node).toBe(true);
+
+        expect(nodeCopy).not.toBe(node);
+
+        expect(nodeCopy.hasLeftChild()).toBe(false);
+
+        expect(nodeCopy.getRightChild()).not.toBe(nodeRight);
+        expect(nodeCopy.getRightChild().getValue()).toEqual(nodeRight.getValue());
       });
     });
   });

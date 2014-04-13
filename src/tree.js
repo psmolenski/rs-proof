@@ -59,6 +59,21 @@ function Node(value){
     return this.hasLeftChild() || this.hasRightChild();
   };
 
+  this.copy = function () {
+    var nodeCopy = new (this.constructor)();
+    nodeCopy.setValue(this.getValue());
+
+    if (this.hasLeftChild()) {
+      nodeCopy.setLeftChild(this.getLeftChild().copy());
+    }
+
+    if (this.hasRightChild()) {
+      nodeCopy.setRightChild(this.getRightChild().copy());
+    }
+
+    return nodeCopy;
+  };
+
   if (typeof value == 'undefined'){
     this.setValue(null);
   } else {
@@ -124,6 +139,13 @@ function Tree(root){
     return leaves;
 
 
+  };
+
+  this.copy = function () {
+
+    var root = this.hasRoot() ? this.getRoot().copy() : null;
+
+    return new (this.constructor)(root)
   };
 
   if (root instanceof Node){

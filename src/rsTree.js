@@ -55,7 +55,7 @@ function RsNode(value){
     if (formulaRoot instanceof parsingTree.AlternativeNode){
 
       leftSubtree = previousFormulas
-        .concat([formulaRoot.getLeftSubtree(), formulaRoot.getRightSubtree()])
+        .concat([formulaRoot.getLeftSubtree().copy(), formulaRoot.getRightSubtree().copy()])
         .concat(nextFormulas);
 
       return [new RsNode(leftSubtree)];
@@ -63,11 +63,11 @@ function RsNode(value){
 
     if (formulaRoot instanceof parsingTree.ConjunctionNode){
       leftSubtree = previousFormulas
-        .concat([formulaRoot.getLeftSubtree()])
+        .concat([formulaRoot.getLeftSubtree().copy()])
         .concat(nextFormulas);
 
       rightSubtree = previousFormulas
-        .concat([formulaRoot.getRightSubtree()])
+        .concat([formulaRoot.getRightSubtree().copy()])
         .concat(nextFormulas);
 
       return [new RsNode(leftSubtree), new RsNode(rightSubtree)];
@@ -75,11 +75,11 @@ function RsNode(value){
 
     if (formulaRoot instanceof parsingTree.ImplicationNode){
 
-      var tmpLeftSubtree = formulaRoot.getLeftSubtree();
+      var tmpLeftSubtree = formulaRoot.getLeftSubtree().copy();
       tmpLeftSubtree.negate();
 
       leftSubtree = previousFormulas
-        .concat([tmpLeftSubtree, formulaRoot.getRightSubtree()])
+        .concat([tmpLeftSubtree, formulaRoot.getRightSubtree().copy()])
         .concat(nextFormulas);
 
       return [new RsNode(leftSubtree)];
@@ -182,7 +182,7 @@ function createFromParsingTree(parsingTree){
     return new RsTree();
   }
 
-  var rsTree = new RsTree(parsingTree);
+  var rsTree = new RsTree(parsingTree.copy());
 
   return decompose(rsTree);
 
