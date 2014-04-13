@@ -2,11 +2,13 @@ describe('RsTree', function () {
 
   var rsTree = require('../src/rsTree');
   var parsingTree = require('../src/parsingTree');
+  var ParsingTree = parsingTree.ParsingTree;
   var AtomNode = parsingTree.AtomNode;
   var AlternativeNode = parsingTree.AlternativeNode;
   var ConjunctionNode = parsingTree.ConjunctionNode;
   var ImplicationNode = parsingTree.ImplicationNode;
   var Tree = require('../src/tree').Tree;
+  var Node = require('../src/tree').Node;
   var RsNode = rsTree.RsNode;
   var RsTree = rsTree.RsTree;
   var createFromParsingTree = rsTree.createFromParsingTree;
@@ -743,5 +745,47 @@ describe('RsTree', function () {
     });
 
   });
+
+  describe("isSatisfiable", function () {
+    it("empty tree is not satisfiable", function () {
+      var tree = new Tree();
+
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isSatisfiable()).toBe(false);
+    });
+
+    it("a single formula is satisfiable", function () {
+      var root = new AtomNode('a');
+      var tree = new Tree(root);
+
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isSatisfiable()).toBe(true);
+    });
+
+    it("tree for (a OR a) is satisfiable", function () {
+      var root = new AlternativeNode();
+      root.setLeftChild(new AtomNode('a'));
+      root.setRightChild(new AtomNode('a'));
+      var tree = new Tree(root);
+      var resultTree = createFromParsingTree(tree);
+
+      expect(resultTree.isSatisfiable()).toBe(true);
+
+    });
+
+    it("tree for (a AND ~a) is not satisfiable", function () {
+      var root = new ConjunctionNode();
+      root.setLeftChild(new AtomNode('a'));
+      root.setRightChild(new AtomNode('a', true));
+      var tree = new ParsingTree(root);
+
+      var resultTree = createFromParsingTree(tree);
+      expect(resultTree.isSatisfiable()).toBe(false);
+
+    });
+  });
+  
 
 });

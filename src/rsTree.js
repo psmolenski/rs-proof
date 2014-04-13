@@ -1,5 +1,6 @@
 var tree = require('./tree');
 var parsingTree = require('./parsingTree');
+var ParsingTree = parsingTree.ParsingTree;
 var AtomNode = require('./parsingTree').AtomNode;
 var _ = require('lodash');
 
@@ -134,6 +135,22 @@ RsTree.prototype.isProof = function () {
   return this.getLeaves().every(function (node) {
     return node.isFundamental();
   });
+};
+
+RsTree.prototype.isSatisfiable = function () {
+
+  if (!this.hasRoot()){
+    return false;
+  } else if (this.isProof()){
+    return true;
+  }
+
+  var rootValue = this.getRoot().getValue()[0];
+  var parsingTree = new ParsingTree(rootValue);
+  parsingTree.negate();
+  var rsTree = createFromParsingTree(parsingTree);
+
+  return !rsTree.isProof();
 };
 
 RsTree.prototype.toString = function () {

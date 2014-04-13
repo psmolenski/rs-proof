@@ -12,6 +12,11 @@ if (rsTree.isProof()) {
   process.stdout.write('Formula is valid\n');
   process.stdout.write('RS decomposition tree:\n');
   process.stdout.write(rsTree.toString() + '\n');
-
+} else if (rsTree.isSatisfiable()){
+  process.stdout.write('Formula is satisifiable\n');
+  process.stdout.write('RS decomposition tree:\n');
+  process.stdout.write(rsTree.toString() + '\n');
+} else {
+  process.stdout.write('Formula is not satisifiable\n');
 }
 
